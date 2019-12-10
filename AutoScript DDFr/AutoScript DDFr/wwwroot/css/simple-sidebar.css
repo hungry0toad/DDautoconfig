@@ -47,7 +47,11 @@ body {
         margin-left: -15rem;
     }
 
-    #bg-notlight {
-        background-color: #1E2543
+    .bg-notlight {
+        background-color: #1E2543;
+        color: white;
+    }
+    .dropdown-item {
+        color: white;
     }
 }
