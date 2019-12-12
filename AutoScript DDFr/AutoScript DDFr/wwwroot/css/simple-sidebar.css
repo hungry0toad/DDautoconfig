@@ -51,7 +51,7 @@ body {
         background-color: #1E2543;
         color: white;
     }
-    .dropdown-item {
-        color: white;
-    }
+}
+.navbar-light .navbar-nav .nav-link {
+    color: white;
 }
