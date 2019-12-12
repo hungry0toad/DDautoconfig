@@ -1,6 +1,27 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+@font-face {
+    font-family: CoreSansN;
+    src: url('CoreSansN.ttf');
+}
+
+h1 {
+    font-family: CoreSansN;
+    color: #009FE3;
+    text-align: center;
+    font-size:40px;
+    padding: 20px;
+}
+
+h2 {
+    font-family: CoreSansN;
+    color: black;
+    text-align: center;
+    font-size: 30px;
+    padding: 10px;
+}
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -19,7 +40,7 @@ a {
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
+  color: white;
   background-color: #1b6ec2;
   border-color: #1861ac;
 }

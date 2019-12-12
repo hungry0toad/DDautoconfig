@@ -3,6 +3,17 @@
  * Copyright 2013-2019 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
  */
+@font-face {
+    font-family: CoreSansN;
+    src: url('CoreSansN.ttf');
+}
+
+h1 {
+    font-family: CoreSansN;
+    color: #009FE3;
+    text-align: center;
+}
+
 body {
     overflow-x: hidden;
 }
@@ -52,12 +63,19 @@ body {
         color: white;
     }
 }
+
 .navbar-light .navbar-nav .nav-link {
     color: white;
 }
-.navbar-light .navbar-nav .nav-link:hover {
-    color: white;
-}
-#TitleTop{
+
+    .navbar-light .navbar-nav .nav-link:hover {
+        color: white;
+    }
+
+    .navbar-light .navbar-nav .active > .nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .show > .nav-link {
+        color: white;
+    }
+
+#TitleTop {
     margin-left: 1%;
 }
