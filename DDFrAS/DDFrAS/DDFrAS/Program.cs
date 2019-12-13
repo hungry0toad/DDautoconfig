@@ -9,12 +9,18 @@ namespace DDFrAS
     {
         static void Main(string[] args)
         {
-            using (var db = new DDFrASEntities())
+            using (DDFrASEntities1 context = new DDFrASEntities1()) 
             {
-                var query = from b in db.CONFIGs orderby b.Line_ID select b;
-
-
-            }
+                CONFIG config = new CONFIG
+                {
+                    Config_ID = 1
+                };
+                context.CONFIGs.Add(config);
+                context.SaveChanges();
+                //List<string> strings = new List<string>();
+                //strings.Add("1");
+                //context.CONFIGs
+            } 
         }
     }
 }

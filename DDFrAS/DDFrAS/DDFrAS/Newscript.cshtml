@@ -1,9 +1,22 @@
 ﻿@using DDFrAS;
 @{
     Page.Title = "Title goes here";
-    //Layout = "Your Layout Page goes here";
+    Layout = "_Layout.cshtml";
+}
+
+@{
+    using (DDFrASEntities1 context = new DDFrASEntities1())
+    {
+
+        CONFIG config = new CONFIG
+        {
+            Config_ID = 1,       
+        };        
+        context.CONFIGs.Add(config);
+        context.SaveChanges();
+    }
 }
 
 <div>
-
+    <h1></h1>
 </div>
