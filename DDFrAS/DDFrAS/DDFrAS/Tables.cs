@@ -21,7 +21,7 @@ public class SWITCH
     public POP POP { get; set; }
 
     //FK
-    public int 
+    //public int ;
 }
 
 public class PORT
