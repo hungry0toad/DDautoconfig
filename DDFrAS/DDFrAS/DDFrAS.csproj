@@ -313,46 +313,71 @@
     <Content Include="bin\System.Web.WebPages.Razor.dll" />
     <Content Include="bin\System.Web.WebPages.Razor.xml" />
     <Content Include="bin\System.Web.WebPages.xml" />
+    <Content Include="DDFrADOEF.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>DDFrADOEF.edmx</DependentUpon>
+      <LastGenOutput>DDFrADOEF.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DDFrADOEF.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>DDFrADOEF.edmx</DependentUpon>
+      <LastGenOutput>DDFrADOEF.cs</LastGenOutput>
+    </Content>
     <Content Include="DDFrAS\css\simple-sidebar.css" />
     <Content Include="DDFrAS\css\site.css" />
     <Content Include="DDFrAS\img\logo_ddfr.png" />
     <Content Include="testsql.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>testsql.edmx</DependentUpon>
+      <DependentUpon>DDFrADObu.edmx.not</DependentUpon>
       <LastGenOutput>testsql.Context.cs</LastGenOutput>
     </Content>
     <Content Include="testsql.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>testsql.edmx</DependentUpon>
+      <DependentUpon>DDFrADObu.edmx.not</DependentUpon>
       <LastGenOutput>testsql.cs</LastGenOutput>
     </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CONFIG.cs">
-      <DependentUpon>testsql.tt</DependentUpon>
+      <DependentUpon>DDFrADOEF.tt</DependentUpon>
     </Compile>
     <Compile Include="CONFIG_VAR.cs">
-      <DependentUpon>testsql.tt</DependentUpon>
+      <DependentUpon>DDFrADOEF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DDFrADOEF.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DDFrADOEF.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DDFrADOEF.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DDFrADOEF.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DDFrADOEF.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DDFrADOEF.edmx</DependentUpon>
     </Compile>
     <Compile Include="DDFrAS\Newscript.cshtml.cs" />
     <Compile Include="DDFrAS\Tables.cs" />
     <Compile Include="POP.cs">
-      <DependentUpon>testsql.tt</DependentUpon>
+      <DependentUpon>DDFrADOEF.tt</DependentUpon>
     </Compile>
     <Compile Include="PORT.cs">
-      <DependentUpon>testsql.tt</DependentUpon>
+      <DependentUpon>DDFrADOEF.tt</DependentUpon>
     </Compile>
     <Compile Include="PRODUCT.cs">
-      <DependentUpon>testsql.tt</DependentUpon>
+      <DependentUpon>DDFrADOEF.tt</DependentUpon>
     </Compile>
     <Compile Include="DDFrAS\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SSH_COMMANDS.cs">
-      <DependentUpon>testsql.tt</DependentUpon>
+      <DependentUpon>DDFrADOEF.tt</DependentUpon>
     </Compile>
     <Compile Include="SWITCH.cs">
-      <DependentUpon>testsql.tt</DependentUpon>
+      <DependentUpon>DDFrADOEF.tt</DependentUpon>
     </Compile>
     <Compile Include="testsql.Context.cs">
       <AutoGen>True</AutoGen>
@@ -364,16 +389,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>testsql.tt</DependentUpon>
     </Compile>
-    <Compile Include="testsql.Designer.cs">
+    <Compile Include="DDFrADObu.edmx.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>testsql.edmx</DependentUpon>
+      <DependentUpon>DDFrADObu.edmx.not</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="DDFrAS\_Layout.cshtml" />
     <Content Include="DDFrAS\Home.cshtml" />
-    <Content Include="DDFrAS\Newscript.cshtml" />
     <Content Include="libman.json" />
     <Content Include="bin\DDFrAS.dll.config" />
     <Content Include="bin\roslyn\csc.exe.config" />
@@ -386,13 +410,21 @@
     <Content Include="bin\roslyn\vbc.exe.config" />
     <Content Include="bin\roslyn\vbc.rsp" />
     <Content Include="bin\roslyn\VBCSCompiler.exe.config" />
-    <None Include="packages.config" />
-    <EntityDeploy Include="testsql.edmx">
+    <Content Include="DDFrAS\Newscript.cshtml" />
+    <EntityDeploy Include="DDFrADOEF.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>testsql.Designer.cs</LastGenOutput>
+      <LastGenOutput>DDFrADOEF.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="testsql.edmx.diagram">
-      <DependentUpon>testsql.edmx</DependentUpon>
+    <Content Include="DDFrADOEF.edmx.diagram">
+      <DependentUpon>DDFrADOEF.edmx</DependentUpon>
+    </Content>
+    <None Include="packages.config" />
+    <None Include="DDFrADObu.edmx.not">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>DDFrADObu.edmx.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="DDFrADObu.edmx.diagram">
+      <DependentUpon>DDFrADObu.edmx.not</DependentUpon>
     </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
