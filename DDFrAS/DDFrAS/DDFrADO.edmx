@@ -4,12 +4,12 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DDFrASModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DDFrASModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CONFIG">
           <Key>
             <PropertyRef Name="Config_ID" />
           </Key>
-          <Property Name="Config_ID" Type="int" Nullable="false" />
+          <Property Name="Config_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Line_ID" Type="int" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="ExDate" Type="date" />
@@ -19,7 +19,7 @@
           <Key>
             <PropertyRef Name="CONFIG_VAR_ID" />
           </Key>
-          <Property Name="CONFIG_VAR_ID" Type="int" Nullable="false" />
+          <Property Name="CONFIG_VAR_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Vlan" Type="int" Nullable="false" />
           <Property Name="Man_IP" Type="text" Nullable="false" />
           <Property Name="Username" Type="text" Nullable="false" />
@@ -31,36 +31,28 @@
           <Key>
             <PropertyRef Name="POP_ID" />
           </Key>
-          <Property Name="POP_ID" Type="int" Nullable="false" />
+          <Property Name="POP_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="POP_Name" Type="text" Nullable="false" />
         </EntityType>
         <EntityType Name="PORT">
           <Key>
             <PropertyRef Name="Port_ID" />
           </Key>
-          <Property Name="Port_ID" Type="int" Nullable="false" />
+          <Property Name="Port_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Port_Name" Type="text" Nullable="false" />
         </EntityType>
         <EntityType Name="PRODUCT">
           <Key>
             <PropertyRef Name="Product_ID" />
           </Key>
-          <Property Name="Product_ID" Type="int" Nullable="false" />
+          <Property Name="Product_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Product_Name" Type="text" Nullable="false" />
-        </EntityType>
-        <EntityType Name="SSH_COMMANDOS">
-          <Key>
-            <PropertyRef Name="Commando_ID" />
-          </Key>
-          <Property Name="Commando_ID" Type="int" Nullable="false" />
-          <Property Name="Commando_Name" Type="text" Nullable="false" />
-          <Property Name="Commando_Temp" Type="text" Nullable="false" />
         </EntityType>
         <EntityType Name="SSH_COMMANDS">
           <Key>
             <PropertyRef Name="Command_ID" />
           </Key>
-          <Property Name="Command_ID" Type="int" Nullable="false" />
+          <Property Name="Command_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Command_Name" Type="text" Nullable="false" />
           <Property Name="Command_Temp" Type="text" Nullable="false" />
         </EntityType>
@@ -68,7 +60,7 @@
           <Key>
             <PropertyRef Name="Switch_ID" />
           </Key>
-          <Property Name="Switch_ID" Type="int" Nullable="false" />
+          <Property Name="Switch_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Switch_Name" Type="text" Nullable="false" />
         </EntityType>
         <Association Name="FK_CONFIG_ToCONFIG_VAR">
@@ -137,7 +129,6 @@
           <EntitySet Name="POP" EntityType="Self.POP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PORT" EntityType="Self.PORT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRODUCT" EntityType="Self.PRODUCT" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="SSH_COMMANDOS" EntityType="Self.SSH_COMMANDOS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SSH_COMMANDS" EntityType="Self.SSH_COMMANDS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SWITCH" EntityType="Self.SWITCH" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_CONFIG_ToCONFIG_VAR" Association="Self.FK_CONFIG_ToCONFIG_VAR">
@@ -161,8 +152,7 @@
             <End Role="SWITCH" EntitySet="SWITCH" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DDFrASModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -216,14 +206,6 @@
           <Property Name="Product_ID" Type="Int32" Nullable="false" />
           <Property Name="Product_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="CONFIG" Relationship="Self.FK_PRODUCT_ToCONFIG" FromRole="PRODUCT" ToRole="CONFIG" />
-        </EntityType>
-        <EntityType Name="SSH_COMMANDOS">
-          <Key>
-            <PropertyRef Name="Commando_ID" />
-          </Key>
-          <Property Name="Commando_ID" Type="Int32" Nullable="false" />
-          <Property Name="Commando_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Commando_Temp" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
         <EntityType Name="SSH_COMMANDS">
           <Key>
@@ -308,7 +290,6 @@
           <EntitySet Name="POPs" EntityType="Self.POP" />
           <EntitySet Name="PORTs" EntityType="Self.PORT" />
           <EntitySet Name="PRODUCTs" EntityType="Self.PRODUCT" />
-          <EntitySet Name="SSH_COMMANDOS" EntityType="Self.SSH_COMMANDOS" />
           <EntitySet Name="SSH_COMMANDS" EntityType="Self.SSH_COMMANDS" />
           <EntitySet Name="SWITCHes" EntityType="Self.SWITCH" />
           <AssociationSet Name="FK_CONFIG_ToCONFIG_VAR" Association="Self.FK_CONFIG_ToCONFIG_VAR">
@@ -383,15 +364,6 @@
               <MappingFragment StoreEntitySet="PRODUCT">
                 <ScalarProperty Name="Product_ID" ColumnName="Product_ID" />
                 <ScalarProperty Name="Product_Name" ColumnName="Product_Name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SSH_COMMANDOS">
-            <EntityTypeMapping TypeName="DDFrASModel.SSH_COMMANDOS">
-              <MappingFragment StoreEntitySet="SSH_COMMANDOS">
-                <ScalarProperty Name="Commando_ID" ColumnName="Commando_ID" />
-                <ScalarProperty Name="Commando_Name" ColumnName="Commando_Name" />
-                <ScalarProperty Name="Commando_Temp" ColumnName="Commando_Temp" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

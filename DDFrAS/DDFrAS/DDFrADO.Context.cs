@@ -30,7 +30,6 @@ namespace DDFrAS
         public virtual DbSet<POP> POPs { get; set; }
         public virtual DbSet<PORT> PORTs { get; set; }
         public virtual DbSet<PRODUCT> PRODUCTs { get; set; }
-        public virtual DbSet<SSH_COMMANDOS> SSH_COMMANDOS { get; set; }
         public virtual DbSet<SSH_COMMANDS> SSH_COMMANDS { get; set; }
         public virtual DbSet<SWITCH> SWITCHes { get; set; }
     }
