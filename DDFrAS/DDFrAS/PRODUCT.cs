@@ -18,6 +18,5 @@ namespace DDFrAS
         public string Product_Name { get; set; }
     
         public virtual CONFIG CONFIG { get; set; }
-        public virtual SWITCH SWITCH { get; set; }
     }
 }

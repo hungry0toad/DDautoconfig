@@ -18,8 +18,9 @@ namespace DDFrAS
         public int Vlan { get; set; }
         public string Man_IP { get; set; }
         public string Username { get; set; }
+        public string Password { get; set; }
         public string PasswordSSH { get; set; }
-        public string Term_Pass { get; set; }
+        public string Terminal { get; set; }
     
         public virtual CONFIG CONFIG { get; set; }
     }

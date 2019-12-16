@@ -18,6 +18,5 @@ namespace DDFrAS
         public string Switch_Name { get; set; }
     
         public virtual PORT PORT { get; set; }
-        public virtual PRODUCT PRODUCT { get; set; }
     }
 }
