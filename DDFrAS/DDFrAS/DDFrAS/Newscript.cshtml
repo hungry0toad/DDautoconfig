@@ -5,16 +5,45 @@
 }
 
 @{
-    using (DDFrASEntities1 context = new DDFrASEntities1())
-    {
+    int lineid = 1;
+    int status = 1;
+    DateTime datetime = DateTime.Now;
+    string script = "SCRIPTTEST";
+    int vlan = 123;
+    string manip = "192.168.1.105";
+    string username = "username";
+    string passwordssh = "class";
+    string termpass = "system";
+    string productname = "Parc Access";
 
+    using (DDFrASEntities context = new DDFrASEntities())
+    {
         CONFIG config = new CONFIG
         {
-            Config_ID = 1,       
-        };        
+            Line_ID = lineid,
+            Status = status,
+            ExDate = datetime,
+            Script = script
+        };
+
+        CONFIG_VAR configvar = new CONFIG_VAR
+        {
+            Vlan = vlan,
+            Man_IP = manip,
+            Username = username,
+            PasswordSSH = passwordssh,
+            Terminal = termpass
+        };
         context.CONFIGs.Add(config);
+        context.CONFIG_VAR.Add(configvar);
+
+
         context.SaveChanges();
+        
+
     }
+
+
 }
 
 <div>
