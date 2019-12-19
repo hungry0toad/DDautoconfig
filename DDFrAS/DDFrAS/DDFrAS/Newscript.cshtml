@@ -6,43 +6,30 @@
 }
 
 @{
+    string ssh_template = "";
+    using (var context = new DDFrASEntities())
+    {
+        ssh_template = context.SSH_COMMANDS.Find(4).Command_Temp;
+    }
+
     if (IsPost)
     {
-        //request form data
-        string vlan = Request.Form["vlan"];
-        string manip = Request.Form["manip"];
-        string username = Request.Form["username"];
-        string passwordssh = Request.Form["passwordssh"];
-        string terminal = Request.Form["terminal"];
+        ////request form data
+        //string vlan = Request.Form["vlan"];
+        //string manip = Request.Form["manip"];
+        //string username = Request.Form["username"];
+        //string passwordssh = Request.Form["passwordssh"];
+        //string terminal = Request.Form["terminal"];
 
-        //push form data to database
-        Newvdbinputs.Newvars(vlan, manip, username, passwordssh, terminal);
+        ////push form data to database
+        //Newvdbinputs.Newvars(vlan, manip, username, passwordssh, terminal);
     }
 }
 
 <div class="container text-left">
-    <h1>Voer in:</h1>
+    <h2>Nieuw Script Maken</h2><br />
     <form method="post">
-        <p>
-            <label>Vlan:</label>
-            <input class="form-control" name="vlan" />
-        </p>
-        <p>
-            <label>Management IP:</label>
-            <input class="form-control" name="manip" />
-        </p>
-        <p>
-            <label>Username SSH:</label>
-            <input class="form-control" name="username" />
-        </p>
-        <p>
-            <label>Wachtwoord SSH:</label>
-            <input class="form-control" name="passwordssh" />
-        </p>
-        <p>
-            <label>Terminal wachtwoord:</label>
-            <input class="form-control" name="terminal" />
-        </p>
-        <button type="submit">k</button>
+        <textarea style="width: 100%;height:100%">@ssh_template</textarea>
+        <button type="submit">Maak nieuw script</button>
     </form>
 </div>
