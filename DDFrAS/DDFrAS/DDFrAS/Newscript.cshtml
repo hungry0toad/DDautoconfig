@@ -1,51 +1,46 @@
-﻿@using DDFrAS;
+@using DDFrAS;
+@using DDFrAS.DDFrAS;
 @{
     Page.Title = "Title goes here";
     Layout = "_Layout.cshtml";
+    string vlan = "";
+    string manip = "";
+    string username = "";
+    string passwordssh = "";
+    string terminal = "";
 }
 
 @{
-    int lineid = 1;
-    int status = 1;
-    DateTime datetime = DateTime.Now;
-    string script = "SCRIPTTEST";
-    int vlan = 123;
-    string manip = "192.168.1.105";
-    string username = "username";
-    string passwordssh = "class";
-    string termpass = "system";
-    string productname = "Parc Access";
-
-    using (DDFrASEntities context = new DDFrASEntities())
+    if (IsPost)
     {
-        CONFIG config = new CONFIG
-        {
-            Line_ID = lineid,
-            Status = status,
-            ExDate = datetime,
-            Script = script
-        };
-
-        CONFIG_VAR configvar = new CONFIG_VAR
-        {
-            Vlan = vlan,
-            Man_IP = manip,
-            Username = username,
-            PasswordSSH = passwordssh,
-            Terminal = termpass
-        };
-        context.CONFIGs.Add(config);
-        context.CONFIG_VAR.Add(configvar);
-
-
-        context.SaveChanges();
         
-
+        Newvdbinputs.Newvars(vlan, manip, username, passwordssh, terminal);
     }
-
-
 }
 
 <div>
-    <h1></h1>
+    <h1>Voer in:</h1>
+    <form type="post">
+        <p>
+            <label>Vlan:</label>
+            <input class="form-control" name="vlan" />
+        </p>
+        <p>
+            <label>Management IP:</label>
+            <input name="manip"/>
+        </p>
+        <p>
+            <label>Username SSH:</label>
+            <input name="username"/>
+        </p>
+        <p>
+            <label>Wachtwoord SSH:</label>
+            <input name="passwordssh"/>
+        </p>
+        <p>
+            <label>Terminal wachtwoord:</label>
+           <input name="terminal" />
+        </p>
+        <button type="submit">k</button>
+    </form>
 </div>

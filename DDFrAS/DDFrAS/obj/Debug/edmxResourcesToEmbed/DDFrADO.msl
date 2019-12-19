@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DDFrASModelStoreContainer" CdmEntityContainer="DDFrASEntities">
+    <EntitySetMapping Name="CONFIGs">
+      <EntityTypeMapping TypeName="DDFrASModel.CONFIG">
+        <MappingFragment StoreEntitySet="CONFIG">
+          <ScalarProperty Name="Script" ColumnName="Script" />
+          <ScalarProperty Name="ExDate" ColumnName="ExDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Line_ID" ColumnName="Line_ID" />
+          <ScalarProperty Name="Config_ID" ColumnName="Config_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CONFIG_VAR">
+      <EntityTypeMapping TypeName="DDFrASModel.CONFIG_VAR">
+        <MappingFragment StoreEntitySet="CONFIG_VAR">
+          <ScalarProperty Name="Terminal" ColumnName="Terminal" />
+          <ScalarProperty Name="PasswordSSH" ColumnName="PasswordSSH" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="Man_IP" ColumnName="Man_IP" />
+          <ScalarProperty Name="Vlan" ColumnName="Vlan" />
+          <ScalarProperty Name="CONFIG_VAR_ID" ColumnName="CONFIG_VAR_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="POPs">
+      <EntityTypeMapping TypeName="DDFrASModel.POP">
+        <MappingFragment StoreEntitySet="POP">
+          <ScalarProperty Name="POP_Name" ColumnName="POP_Name" />
+          <ScalarProperty Name="POP_ID" ColumnName="POP_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PORTs">
+      <EntityTypeMapping TypeName="DDFrASModel.PORT">
+        <MappingFragment StoreEntitySet="PORT">
+          <ScalarProperty Name="Port_Name" ColumnName="Port_Name" />
+          <ScalarProperty Name="Port_ID" ColumnName="Port_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PRODUCTs">
+      <EntityTypeMapping TypeName="DDFrASModel.PRODUCT">
+        <MappingFragment StoreEntitySet="PRODUCT">
+          <ScalarProperty Name="Product_Name" ColumnName="Product_Name" />
+          <ScalarProperty Name="Product_ID" ColumnName="Product_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SSH_COMMANDS">
+      <EntityTypeMapping TypeName="DDFrASModel.SSH_COMMANDS">
+        <MappingFragment StoreEntitySet="SSH_COMMANDS">
+          <ScalarProperty Name="Command_Temp" ColumnName="Command_Temp" />
+          <ScalarProperty Name="Command_Name" ColumnName="Command_Name" />
+          <ScalarProperty Name="Command_ID" ColumnName="Command_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SWITCHes">
+      <EntityTypeMapping TypeName="DDFrASModel.SWITCH">
+        <MappingFragment StoreEntitySet="SWITCH">
+          <ScalarProperty Name="Switch_Name" ColumnName="Switch_Name" />
+          <ScalarProperty Name="Switch_ID" ColumnName="Switch_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
