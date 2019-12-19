@@ -24,8 +24,8 @@ namespace DDFrAS
         public Nullable<int> Switch_ID { get; set; }
         public string Port_Name { get; set; }
     
-        public virtual SWITCH SWITCH { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CONFIG> CONFIGs { get; set; }
+        public virtual SWITCH SWITCH { get; set; }
     }
 }

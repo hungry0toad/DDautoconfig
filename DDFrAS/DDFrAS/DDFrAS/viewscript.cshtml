@@ -1,0 +1,19 @@
+﻿@using DDFrAS;
+@using System.Linq;
+@{
+    Page.Title = "Viewscript";
+    Layout = "_Layout.cshtml";
+    //request scriptid from url
+    int id = Request.QueryString["id"].AsInt();
+    string config = "";
+
+    //get config data from FE with id
+    using (var context = new DDFrASEntities())
+    {
+        config = context.CONFIGs.Find(id).Script;
+    }
+}
+
+<div>
+    @config
+</div>

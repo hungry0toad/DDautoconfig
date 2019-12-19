@@ -25,12 +25,12 @@ namespace DDFrAS
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<CONFIG> CONFIGs { get; set; }
+        public virtual DbSet<CONFIG_VAR> CONFIG_VAR { get; set; }
         public virtual DbSet<POP> POPs { get; set; }
         public virtual DbSet<PORT> PORTs { get; set; }
         public virtual DbSet<PRODUCT> PRODUCTs { get; set; }
         public virtual DbSet<SSH_COMMANDS> SSH_COMMANDS { get; set; }
         public virtual DbSet<SWITCH> SWITCHes { get; set; }
-        public virtual DbSet<CONFIG> CONFIGs { get; set; }
-        public virtual DbSet<CONFIG_VAR> CONFIG_VAR { get; set; }
     }
 }

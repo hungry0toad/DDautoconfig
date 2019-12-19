@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DDFrASModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="DDFrASModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CONFIG">
           <Key>
             <PropertyRef Name="Config_ID" />
@@ -21,10 +21,10 @@
         </EntityType>
         <EntityType Name="CONFIG_VAR">
           <Key>
-            <PropertyRef Name="CONFIG_VAR_ID" />
+            <PropertyRef Name="Config_var_ID" />
           </Key>
-          <Property Name="CONFIG_VAR_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Vlan" Type="int" Nullable="false" />
+          <Property Name="Config_var_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Vlan" Type="text" Nullable="false" />
           <Property Name="Man_IP" Type="text" Nullable="false" />
           <Property Name="Username" Type="text" Nullable="false" />
           <Property Name="PasswordSSH" Type="text" Nullable="false" />
@@ -72,7 +72,7 @@
           <End Role="CONFIG" Type="Self.CONFIG" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CONFIG_VAR">
-              <PropertyRef Name="CONFIG_VAR_ID" />
+              <PropertyRef Name="Config_var_ID" />
             </Principal>
             <Dependent Role="CONFIG">
               <PropertyRef Name="Config_var_ID" />
@@ -156,93 +156,11 @@
             <End Role="PORT" EntitySet="PORT" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DDFrASModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="DDFrASEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="POPs" EntityType="DDFrASModel.POP" />
-          <EntitySet Name="PORTs" EntityType="DDFrASModel.PORT" />
-          <EntitySet Name="PRODUCTs" EntityType="DDFrASModel.PRODUCT" />
-          <EntitySet Name="SSH_COMMANDS" EntityType="DDFrASModel.SSH_COMMANDS" />
-          <EntitySet Name="SWITCHes" EntityType="DDFrASModel.SWITCH" />
-          <AssociationSet Name="FK_SWITCH_ToPORT" Association="DDFrASModel.FK_SWITCH_ToPORT">
-            <End Role="SWITCH" EntitySet="SWITCHes" />
-            <End Role="PORT" EntitySet="PORTs" />
-          </AssociationSet>
-          <EntitySet Name="CONFIGs" EntityType="DDFrASModel.CONFIG" />
-          <AssociationSet Name="FK_PORT_ToCONFIG" Association="DDFrASModel.FK_PORT_ToCONFIG">
-            <End Role="PORT" EntitySet="PORTs" />
-            <End Role="CONFIG" EntitySet="CONFIGs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PRODUCT_ToCONFIG" Association="DDFrASModel.FK_PRODUCT_ToCONFIG">
-            <End Role="PRODUCT" EntitySet="PRODUCTs" />
-            <End Role="CONFIG" EntitySet="CONFIGs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SSH_COMMANDS_ToCONFIG" Association="DDFrASModel.FK_SSH_COMMANDS_ToCONFIG">
-            <End Role="SSH_COMMANDS" EntitySet="SSH_COMMANDS" />
-            <End Role="CONFIG" EntitySet="CONFIGs" />
-          </AssociationSet>
-          <EntitySet Name="CONFIG_VAR" EntityType="DDFrASModel.CONFIG_VAR" />
-          <AssociationSet Name="FK_CONFIG_VAR_ToCONFIG" Association="DDFrASModel.FK_CONFIG_VAR_ToCONFIG">
-            <End Role="CONFIG_VAR" EntitySet="CONFIG_VAR" />
-            <End Role="CONFIG" EntitySet="CONFIGs" />
-          </AssociationSet>
-          </EntityContainer>
-        <EntityType Name="POP">
-          <Key>
-            <PropertyRef Name="POP_ID" />
-          </Key>
-          <Property Name="POP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="POP_Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="PORT">
-          <Key>
-            <PropertyRef Name="Port_ID" />
-          </Key>
-          <Property Name="Port_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Switch_ID" Type="Int32" />
-          <Property Name="Port_Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="SWITCH" Relationship="DDFrASModel.FK_SWITCH_ToPORT" FromRole="PORT" ToRole="SWITCH" />
-          <NavigationProperty Name="CONFIGs" Relationship="DDFrASModel.FK_PORT_ToCONFIG" FromRole="PORT" ToRole="CONFIG" />
-        </EntityType>
-        <EntityType Name="PRODUCT">
-          <Key>
-            <PropertyRef Name="Product_ID" />
-          </Key>
-          <Property Name="Product_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Product_Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="CONFIGs" Relationship="DDFrASModel.FK_PRODUCT_ToCONFIG" FromRole="PRODUCT" ToRole="CONFIG" />
-        </EntityType>
-        <EntityType Name="SSH_COMMANDS">
-          <Key>
-            <PropertyRef Name="Command_ID" />
-          </Key>
-          <Property Name="Command_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Command_Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Command_Temp" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="CONFIGs" Relationship="DDFrASModel.FK_SSH_COMMANDS_ToCONFIG" FromRole="SSH_COMMANDS" ToRole="CONFIG" />
-        </EntityType>
-        <EntityType Name="SWITCH">
-          <Key>
-            <PropertyRef Name="Switch_ID" />
-          </Key>
-          <Property Name="Switch_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Switch_Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="PORTs" Relationship="DDFrASModel.FK_SWITCH_ToPORT" FromRole="SWITCH" ToRole="PORT" />
-        </EntityType>
-        <Association Name="FK_SWITCH_ToPORT">
-          <End Type="DDFrASModel.SWITCH" Role="SWITCH" Multiplicity="0..1" />
-          <End Type="DDFrASModel.PORT" Role="PORT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SWITCH">
-              <PropertyRef Name="Switch_ID" />
-            </Principal>
-            <Dependent Role="PORT">
-              <PropertyRef Name="Switch_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="CONFIG">
           <Key>
             <PropertyRef Name="Config_ID" />
@@ -256,14 +174,80 @@
           <Property Name="Status" Type="Int32" />
           <Property Name="ExDate" Type="DateTime" Precision="3" />
           <Property Name="Script" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="PORT" Relationship="DDFrASModel.FK_PORT_ToCONFIG" FromRole="CONFIG" ToRole="PORT" />
-          <NavigationProperty Name="PRODUCT" Relationship="DDFrASModel.FK_PRODUCT_ToCONFIG" FromRole="CONFIG" ToRole="PRODUCT" />
-          <NavigationProperty Name="SSH_COMMANDS" Relationship="DDFrASModel.FK_SSH_COMMANDS_ToCONFIG" FromRole="CONFIG" ToRole="SSH_COMMANDS" />
-          <NavigationProperty Name="CONFIG_VAR" Relationship="DDFrASModel.FK_CONFIG_VAR_ToCONFIG" FromRole="CONFIG" ToRole="CONFIG_VAR" />
+          <NavigationProperty Name="CONFIG_VAR" Relationship="Self.FK_CONFIG_VAR_ToCONFIG" FromRole="CONFIG" ToRole="CONFIG_VAR" />
+          <NavigationProperty Name="PORT" Relationship="Self.FK_PORT_ToCONFIG" FromRole="CONFIG" ToRole="PORT" />
+          <NavigationProperty Name="PRODUCT" Relationship="Self.FK_PRODUCT_ToCONFIG" FromRole="CONFIG" ToRole="PRODUCT" />
+          <NavigationProperty Name="SSH_COMMANDS" Relationship="Self.FK_SSH_COMMANDS_ToCONFIG" FromRole="CONFIG" ToRole="SSH_COMMANDS" />
         </EntityType>
+        <EntityType Name="CONFIG_VAR">
+          <Key>
+            <PropertyRef Name="Config_var_ID" />
+          </Key>
+          <Property Name="Config_var_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Vlan" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Man_IP" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PasswordSSH" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Terminal" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="CONFIGs" Relationship="Self.FK_CONFIG_VAR_ToCONFIG" FromRole="CONFIG_VAR" ToRole="CONFIG" />
+        </EntityType>
+        <EntityType Name="POP">
+          <Key>
+            <PropertyRef Name="POP_ID" />
+          </Key>
+          <Property Name="POP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="POP_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PORT">
+          <Key>
+            <PropertyRef Name="Port_ID" />
+          </Key>
+          <Property Name="Port_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Switch_ID" Type="Int32" />
+          <Property Name="Port_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="CONFIGs" Relationship="Self.FK_PORT_ToCONFIG" FromRole="PORT" ToRole="CONFIG" />
+          <NavigationProperty Name="SWITCH" Relationship="Self.FK_SWITCH_ToPORT" FromRole="PORT" ToRole="SWITCH" />
+        </EntityType>
+        <EntityType Name="PRODUCT">
+          <Key>
+            <PropertyRef Name="Product_ID" />
+          </Key>
+          <Property Name="Product_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Product_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="CONFIGs" Relationship="Self.FK_PRODUCT_ToCONFIG" FromRole="PRODUCT" ToRole="CONFIG" />
+        </EntityType>
+        <EntityType Name="SSH_COMMANDS">
+          <Key>
+            <PropertyRef Name="Command_ID" />
+          </Key>
+          <Property Name="Command_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Command_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Command_Temp" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="CONFIGs" Relationship="Self.FK_SSH_COMMANDS_ToCONFIG" FromRole="SSH_COMMANDS" ToRole="CONFIG" />
+        </EntityType>
+        <EntityType Name="SWITCH">
+          <Key>
+            <PropertyRef Name="Switch_ID" />
+          </Key>
+          <Property Name="Switch_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Switch_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="PORTs" Relationship="Self.FK_SWITCH_ToPORT" FromRole="SWITCH" ToRole="PORT" />
+        </EntityType>
+        <Association Name="FK_CONFIG_VAR_ToCONFIG">
+          <End Role="CONFIG_VAR" Type="Self.CONFIG_VAR" Multiplicity="0..1" />
+          <End Role="CONFIG" Type="Self.CONFIG" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CONFIG_VAR">
+              <PropertyRef Name="Config_var_ID" />
+            </Principal>
+            <Dependent Role="CONFIG">
+              <PropertyRef Name="Config_var_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PORT_ToCONFIG">
-          <End Type="DDFrASModel.PORT" Role="PORT" Multiplicity="0..1" />
-          <End Type="DDFrASModel.CONFIG" Role="CONFIG" Multiplicity="*" />
+          <End Role="PORT" Type="Self.PORT" Multiplicity="0..1" />
+          <End Role="CONFIG" Type="Self.CONFIG" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PORT">
               <PropertyRef Name="Port_ID" />
@@ -274,8 +258,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PRODUCT_ToCONFIG">
-          <End Type="DDFrASModel.PRODUCT" Role="PRODUCT" Multiplicity="0..1" />
-          <End Type="DDFrASModel.CONFIG" Role="CONFIG" Multiplicity="*" />
+          <End Role="PRODUCT" Type="Self.PRODUCT" Multiplicity="0..1" />
+          <End Role="CONFIG" Type="Self.CONFIG" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PRODUCT">
               <PropertyRef Name="Product_ID" />
@@ -286,8 +270,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SSH_COMMANDS_ToCONFIG">
-          <End Type="DDFrASModel.SSH_COMMANDS" Role="SSH_COMMANDS" Multiplicity="0..1" />
-          <End Type="DDFrASModel.CONFIG" Role="CONFIG" Multiplicity="*" />
+          <End Role="SSH_COMMANDS" Type="Self.SSH_COMMANDS" Multiplicity="0..1" />
+          <End Role="CONFIG" Type="Self.CONFIG" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SSH_COMMANDS">
               <PropertyRef Name="Command_ID" />
@@ -297,106 +281,123 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="CONFIG_VAR">
-          <Key>
-            <PropertyRef Name="CONFIG_VAR_ID" />
-          </Key>
-          <Property Name="CONFIG_VAR_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Vlan" Type="String" Nullable="false" />
-          <Property Name="Man_IP" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Username" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="PasswordSSH" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Terminal" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="CONFIGs" Relationship="DDFrASModel.FK_CONFIG_VAR_ToCONFIG" FromRole="CONFIG_VAR" ToRole="CONFIG" />
-        </EntityType>
-        <Association Name="FK_CONFIG_VAR_ToCONFIG">
-          <End Type="DDFrASModel.CONFIG_VAR" Role="CONFIG_VAR" Multiplicity="0..1" />
-          <End Type="DDFrASModel.CONFIG" Role="CONFIG" Multiplicity="*" />
+        <Association Name="FK_SWITCH_ToPORT">
+          <End Role="SWITCH" Type="Self.SWITCH" Multiplicity="0..1" />
+          <End Role="PORT" Type="Self.PORT" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="CONFIG_VAR">
-              <PropertyRef Name="CONFIG_VAR_ID" />
+            <Principal Role="SWITCH">
+              <PropertyRef Name="Switch_ID" />
             </Principal>
-            <Dependent Role="CONFIG">
-              <PropertyRef Name="Config_var_ID" />
+            <Dependent Role="PORT">
+              <PropertyRef Name="Switch_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        </Schema>
+        <EntityContainer Name="DDFrASEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CONFIGs" EntityType="Self.CONFIG" />
+          <EntitySet Name="CONFIG_VAR" EntityType="Self.CONFIG_VAR" />
+          <EntitySet Name="POPs" EntityType="Self.POP" />
+          <EntitySet Name="PORTs" EntityType="Self.PORT" />
+          <EntitySet Name="PRODUCTs" EntityType="Self.PRODUCT" />
+          <EntitySet Name="SSH_COMMANDS" EntityType="Self.SSH_COMMANDS" />
+          <EntitySet Name="SWITCHes" EntityType="Self.SWITCH" />
+          <AssociationSet Name="FK_CONFIG_VAR_ToCONFIG" Association="Self.FK_CONFIG_VAR_ToCONFIG">
+            <End Role="CONFIG_VAR" EntitySet="CONFIG_VAR" />
+            <End Role="CONFIG" EntitySet="CONFIGs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PORT_ToCONFIG" Association="Self.FK_PORT_ToCONFIG">
+            <End Role="PORT" EntitySet="PORTs" />
+            <End Role="CONFIG" EntitySet="CONFIGs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PRODUCT_ToCONFIG" Association="Self.FK_PRODUCT_ToCONFIG">
+            <End Role="PRODUCT" EntitySet="PRODUCTs" />
+            <End Role="CONFIG" EntitySet="CONFIGs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SSH_COMMANDS_ToCONFIG" Association="Self.FK_SSH_COMMANDS_ToCONFIG">
+            <End Role="SSH_COMMANDS" EntitySet="SSH_COMMANDS" />
+            <End Role="CONFIG" EntitySet="CONFIGs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SWITCH_ToPORT" Association="Self.FK_SWITCH_ToPORT">
+            <End Role="SWITCH" EntitySet="SWITCHes" />
+            <End Role="PORT" EntitySet="PORTs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DDFrASModelStoreContainer" CdmEntityContainer="DDFrASEntities">
-          <EntitySetMapping Name="POPs">
-            <EntityTypeMapping TypeName="DDFrASModel.POP">
-              <MappingFragment StoreEntitySet="POP">
-                <ScalarProperty Name="POP_Name" ColumnName="POP_Name" />
-                <ScalarProperty Name="POP_ID" ColumnName="POP_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PORTs">
-            <EntityTypeMapping TypeName="DDFrASModel.PORT">
-              <MappingFragment StoreEntitySet="PORT">
-                <ScalarProperty Name="Port_Name" ColumnName="Port_Name" />
-                <ScalarProperty Name="Switch_ID" ColumnName="Switch_ID" />
-                <ScalarProperty Name="Port_ID" ColumnName="Port_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PRODUCTs">
-            <EntityTypeMapping TypeName="DDFrASModel.PRODUCT">
-              <MappingFragment StoreEntitySet="PRODUCT">
-                <ScalarProperty Name="Product_Name" ColumnName="Product_Name" />
-                <ScalarProperty Name="Product_ID" ColumnName="Product_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SSH_COMMANDS">
-            <EntityTypeMapping TypeName="DDFrASModel.SSH_COMMANDS">
-              <MappingFragment StoreEntitySet="SSH_COMMANDS">
-                <ScalarProperty Name="Command_Temp" ColumnName="Command_Temp" />
-                <ScalarProperty Name="Command_Name" ColumnName="Command_Name" />
-                <ScalarProperty Name="Command_ID" ColumnName="Command_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SWITCHes">
-            <EntityTypeMapping TypeName="DDFrASModel.SWITCH">
-              <MappingFragment StoreEntitySet="SWITCH">
-                <ScalarProperty Name="Switch_Name" ColumnName="Switch_Name" />
-                <ScalarProperty Name="Switch_ID" ColumnName="Switch_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CONFIGs">
             <EntityTypeMapping TypeName="DDFrASModel.CONFIG">
               <MappingFragment StoreEntitySet="CONFIG">
-                <ScalarProperty Name="Script" ColumnName="Script" />
-                <ScalarProperty Name="ExDate" ColumnName="ExDate" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Line_ID" ColumnName="Line_ID" />
-                <ScalarProperty Name="Command_ID" ColumnName="Command_ID" />
-                <ScalarProperty Name="Product_ID" ColumnName="Product_ID" />
-                <ScalarProperty Name="Config_var_ID" ColumnName="Config_var_ID" />
-                <ScalarProperty Name="Port_ID" ColumnName="Port_ID" />
                 <ScalarProperty Name="Config_ID" ColumnName="Config_ID" />
+                <ScalarProperty Name="Port_ID" ColumnName="Port_ID" />
+                <ScalarProperty Name="Config_var_ID" ColumnName="Config_var_ID" />
+                <ScalarProperty Name="Product_ID" ColumnName="Product_ID" />
+                <ScalarProperty Name="Command_ID" ColumnName="Command_ID" />
+                <ScalarProperty Name="Line_ID" ColumnName="Line_ID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ExDate" ColumnName="ExDate" />
+                <ScalarProperty Name="Script" ColumnName="Script" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CONFIG_VAR">
             <EntityTypeMapping TypeName="DDFrASModel.CONFIG_VAR">
               <MappingFragment StoreEntitySet="CONFIG_VAR">
-                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
-                <ScalarProperty Name="PasswordSSH" ColumnName="PasswordSSH" />
-                <ScalarProperty Name="Username" ColumnName="Username" />
-                <ScalarProperty Name="Man_IP" ColumnName="Man_IP" />
+                <ScalarProperty Name="Config_var_ID" ColumnName="Config_var_ID" />
                 <ScalarProperty Name="Vlan" ColumnName="Vlan" />
-                <ScalarProperty Name="CONFIG_VAR_ID" ColumnName="CONFIG_VAR_ID" />
+                <ScalarProperty Name="Man_IP" ColumnName="Man_IP" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="PasswordSSH" ColumnName="PasswordSSH" />
+                <ScalarProperty Name="Terminal" ColumnName="Terminal" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          </EntityContainerMapping>
+          <EntitySetMapping Name="POPs">
+            <EntityTypeMapping TypeName="DDFrASModel.POP">
+              <MappingFragment StoreEntitySet="POP">
+                <ScalarProperty Name="POP_ID" ColumnName="POP_ID" />
+                <ScalarProperty Name="POP_Name" ColumnName="POP_Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PORTs">
+            <EntityTypeMapping TypeName="DDFrASModel.PORT">
+              <MappingFragment StoreEntitySet="PORT">
+                <ScalarProperty Name="Port_ID" ColumnName="Port_ID" />
+                <ScalarProperty Name="Switch_ID" ColumnName="Switch_ID" />
+                <ScalarProperty Name="Port_Name" ColumnName="Port_Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCTs">
+            <EntityTypeMapping TypeName="DDFrASModel.PRODUCT">
+              <MappingFragment StoreEntitySet="PRODUCT">
+                <ScalarProperty Name="Product_ID" ColumnName="Product_ID" />
+                <ScalarProperty Name="Product_Name" ColumnName="Product_Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SSH_COMMANDS">
+            <EntityTypeMapping TypeName="DDFrASModel.SSH_COMMANDS">
+              <MappingFragment StoreEntitySet="SSH_COMMANDS">
+                <ScalarProperty Name="Command_ID" ColumnName="Command_ID" />
+                <ScalarProperty Name="Command_Name" ColumnName="Command_Name" />
+                <ScalarProperty Name="Command_Temp" ColumnName="Command_Temp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SWITCHes">
+            <EntityTypeMapping TypeName="DDFrASModel.SWITCH">
+              <MappingFragment StoreEntitySet="SWITCH">
+                <ScalarProperty Name="Switch_ID" ColumnName="Switch_ID" />
+                <ScalarProperty Name="Switch_Name" ColumnName="Switch_Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

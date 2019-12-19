@@ -20,7 +20,7 @@ namespace DDFrAS
             this.CONFIGs = new HashSet<CONFIG>();
         }
     
-        public int CONFIG_VAR_ID { get; set; }
+        public int Config_var_ID { get; set; }
         public string Vlan { get; set; }
         public string Man_IP { get; set; }
         public string Username { get; set; }

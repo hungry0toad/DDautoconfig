@@ -1,0 +1,27 @@
+﻿@using DDFrAS;
+@using DDFrAS.DDFrAS;
+@{
+    Page.Title = "Scripts";
+    Layout = "_Layout.cshtml";
+
+    //Get all scripts
+    var grid = new WebGrid();
+    using (var context = new DDFrASEntities())
+    {
+        var scripts = context.CONFIGs.ToList();
+        grid = new WebGrid(scripts);
+    }
+}
+
+    <div class="flex-lg-wrap mb-auto">
+        <h3>Gegenereerde scripts</h3>
+        <table class="table-responsive">
+            @grid.Table(
+           tableStyle: "table table-striped table-hover",
+           columns: grid.Columns(
+               grid.Column("Config_ID", header: "ID"),
+               grid.Column("Status", header: "Status"),
+               grid.Column("ExDate", header: "Uitvoertijd"),
+               grid.Column(format: @<a href="~/DDFrAS/viewscript.cshtml?id=@item.Config_ID">Ga naar script</a>)))
+                </table>
+    </div>

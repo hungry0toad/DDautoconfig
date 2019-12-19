@@ -24,9 +24,9 @@ namespace DDFrAS
         public Nullable<System.DateTime> ExDate { get; set; }
         public string Script { get; set; }
     
+        public virtual CONFIG_VAR CONFIG_VAR { get; set; }
         public virtual PORT PORT { get; set; }
         public virtual PRODUCT PRODUCT { get; set; }
         public virtual SSH_COMMANDS SSH_COMMANDS { get; set; }
-        public virtual CONFIG_VAR CONFIG_VAR { get; set; }
     }
 }

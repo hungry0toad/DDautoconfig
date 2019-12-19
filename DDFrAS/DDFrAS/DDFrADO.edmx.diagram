@@ -4,19 +4,19 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0e98ee48419a477d8b6d180f818c22e6" Name="Diagram1" ZoomLevel="57">
-        <EntityTypeShape EntityType="DDFrASModel.POP" Width="1.5" PointX="8.5" PointY="1.25" />
-        <EntityTypeShape EntityType="DDFrASModel.PORT" Width="1.5" PointX="3" PointY="1.75" />
-        <EntityTypeShape EntityType="DDFrASModel.PRODUCT" Width="1.5" PointX="3" PointY="11.125" />
-        <EntityTypeShape EntityType="DDFrASModel.SSH_COMMANDS" Width="1.5" PointX="3" PointY="5.25" />
-        <EntityTypeShape EntityType="DDFrASModel.SWITCH" Width="1.5" PointX="0.75" PointY="2" />
-        <AssociationConnector Association="DDFrASModel.FK_SWITCH_ToPORT" />
-        <EntityTypeShape EntityType="DDFrASModel.CONFIG" Width="1.5" PointX="5.25" PointY="5.5" />
-        <AssociationConnector Association="DDFrASModel.FK_PORT_ToCONFIG" />
-        <AssociationConnector Association="DDFrASModel.FK_PRODUCT_ToCONFIG" />
-        <AssociationConnector Association="DDFrASModel.FK_SSH_COMMANDS_ToCONFIG" />
-        <EntityTypeShape EntityType="DDFrASModel.CONFIG_VAR" Width="1.5" PointX="5.375" PointY="1" />
-        <AssociationConnector Association="DDFrASModel.FK_CONFIG_VAR_ToCONFIG" />
+      <Diagram DiagramId="55ad2c17255844a099468a23dcfbabf5" Name="Diagram1">
+        <EntityTypeShape EntityType="DDFrASModel.CONFIG" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="DDFrASModel.CONFIG_VAR" Width="1.5" PointX="3" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DDFrASModel.POP" Width="1.5" PointX="5.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DDFrASModel.PORT" Width="1.5" PointX="3" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DDFrASModel.PRODUCT" Width="1.5" PointX="3" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="DDFrASModel.SSH_COMMANDS" Width="1.5" PointX="3" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DDFrASModel.SWITCH" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <AssociationConnector Association="DDFrASModel.FK_CONFIG_VAR_ToCONFIG" ManuallyRouted="false" />
+        <AssociationConnector Association="DDFrASModel.FK_PORT_ToCONFIG" ManuallyRouted="false" />
+        <AssociationConnector Association="DDFrASModel.FK_PRODUCT_ToCONFIG" ManuallyRouted="false" />
+        <AssociationConnector Association="DDFrASModel.FK_SSH_COMMANDS_ToCONFIG" ManuallyRouted="false" />
+        <AssociationConnector Association="DDFrASModel.FK_SWITCH_ToPORT" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

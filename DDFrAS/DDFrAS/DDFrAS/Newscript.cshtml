@@ -1,45 +1,47 @@
 @using DDFrAS;
 @using DDFrAS.DDFrAS;
 @{
-    Page.Title = "Title goes here";
+    Page.Title = "Nieuw Script";
     Layout = "_Layout.cshtml";
-    string vlan = "";
-    string manip = "";
-    string username = "";
-    string passwordssh = "";
-    string terminal = "";
 }
 
 @{
     if (IsPost)
     {
-        
+        //request form data
+        string vlan = Request.Form["vlan"];
+        string manip = Request.Form["manip"];
+        string username = Request.Form["username"];
+        string passwordssh = Request.Form["passwordssh"];
+        string terminal = Request.Form["terminal"];
+
+        //push form data to database
         Newvdbinputs.Newvars(vlan, manip, username, passwordssh, terminal);
     }
 }
 
-<div>
+<div class="container text-left">
     <h1>Voer in:</h1>
-    <form type="post">
+    <form method="post">
         <p>
             <label>Vlan:</label>
             <input class="form-control" name="vlan" />
         </p>
         <p>
             <label>Management IP:</label>
-            <input name="manip"/>
+            <input class="form-control" name="manip" />
         </p>
         <p>
             <label>Username SSH:</label>
-            <input name="username"/>
+            <input class="form-control" name="username" />
         </p>
         <p>
             <label>Wachtwoord SSH:</label>
-            <input name="passwordssh"/>
+            <input class="form-control" name="passwordssh" />
         </p>
         <p>
             <label>Terminal wachtwoord:</label>
-           <input name="terminal" />
+            <input class="form-control" name="terminal" />
         </p>
         <button type="submit">k</button>
     </form>
