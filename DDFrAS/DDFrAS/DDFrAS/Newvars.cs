@@ -23,5 +23,25 @@ namespace DDFrAS.DDFrAS
                 context.SaveChanges();
             }
         }
+
+        public static void NewScript(string script, DateTime executedate, int id, int status)
+        {
+            using (DDFrASEntities context = new DDFrASEntities())
+            {
+                CONFIG configscript = new CONFIG
+                {
+                    Command_ID = id,
+                    Script = script,
+                    ExDate = executedate,
+                    Status = 0
+                };
+                context.CONFIGs.Add(configscript);
+                context.SaveChanges();
+
+            }
+
+        }
+            
+        
     }
 }
