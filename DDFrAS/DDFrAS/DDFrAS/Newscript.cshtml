@@ -16,9 +16,8 @@
     {
         //request form data
         string script = Request.Form["script"];
-        string executedate = Request.Form["executedate"];
-
-
+        DateTime executedate = Request.Form["executedate"].AsDateTime();
+        
         ////push form data to database
         Newvdbinputs.NewScript(script, executedate, id);
     }

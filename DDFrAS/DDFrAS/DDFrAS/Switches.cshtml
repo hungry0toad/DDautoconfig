@@ -1,0 +1,35 @@
+﻿@using DDFrAS;
+@{
+    Page.Title = "Switches";
+    Layout = "~/DDFrAS/_Layout.cshtml";
+    bool edit = Request.QueryString["edit"].AsBool();
+
+    //get all the switches from database
+    var grid = new WebGrid();
+    using (var context = new DDFrASEntities()) { var switches = context.SWITCHes.ToList(); grid = new WebGrid(switches); }
+}
+<div>
+    <h3>All Switches:</h3>
+    <table class="table-responsive">
+        @grid.Table(
+    tableStyle: "table table-striped table-hover",
+    columns: grid.Columns(
+        grid.Column("Switch_ID", header: "ID"),
+        grid.Column("Man_IP", header: "Management IP"),
+        grid.Column(format: @<a href="~/DDFrAS/Viewswitch.cshtml?id=@item.Switch_ID">"Zie meer"</a>),
+grid.Column(format: @<a href="~/DDFrAS/Viewswitch.cshtml?id=@item.Switch_ID&edit=true"></a>)))
+    </table>
+</div>
+
+@{ if (!edit)
+    {
+        <form action="~/DDFrAS/Switches.cshtml">
+            <input type="hidden" name="edit" value="true" />
+            <button type="submit" class="btn btn-success pull-right">Nieuwe Switch</button>
+        </form>
+    }
+    else
+    {
+
+    }
+}
