@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Text;
+using Renci.SshNet;
+using Renci.SshNet.Sftp;
 
 namespace DDFrAS.DDFrAS
 {
     public class Newvdbinputs
     {
         //insert new variables into database
-       
+
         public static void Newvars(string vlan, string manip, string username, string passwordssh, string terminal)
         {
             using (DDFrASEntities context = new DDFrASEntities())
@@ -54,10 +58,10 @@ namespace DDFrAS.DDFrAS
             {
                 SWITCH newswitch = new SWITCH
                 {
-                    SSH_Password = ssh_password,
-                    SSH_Username = ssh_username,
-                    Term_Password = term_password,
-                    Man_IP = man_ip
+                    //SSH_Password = ssh_password,
+                    //SSH_Username = ssh_username,
+                    //Term_Password = term_password,
+                    //Man_IP = man_ip
                 };
                 context.SWITCHes.Add(newswitch);
                 context.SaveChanges();
@@ -66,5 +70,21 @@ namespace DDFrAS.DDFrAS
 
         }
 
+        //public StringBuilder Resultssh(StringBuilder result)
+        //{
+        //    return result;
+        //}
+
+        //public static void ssh_connection(string ip, string username, string userpassword, string enablepass, string command)
+        //{
+        //    StringBuilder result = new StringBuilder();
+        //    var client = new SshClient(ip, username, userpassword);
+        //    client.Connect();
+        //    result.Append(client.RunCommand(command).Execute() + "\r\n");
+
+
+        //}
+
     }
+
 }

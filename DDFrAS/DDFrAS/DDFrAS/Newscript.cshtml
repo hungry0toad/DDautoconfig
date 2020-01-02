@@ -1,5 +1,6 @@
 @using DDFrAS;
 @using DDFrAS.DDFrAS;
+@using ssh
 @{
     Page.Title = "Nieuw Script";
     Layout = "_Layout.cshtml";
@@ -17,10 +18,12 @@
         //request form data
         string script = Request.Form["script"];
         DateTime executedate = Request.Form["executedate"].AsDateTime();
-        
+
         ////push form data to database
         Newvdbinputs.NewScript(script, executedate, id);
     }
+
+
 }
 
 <div class="container text-left">
