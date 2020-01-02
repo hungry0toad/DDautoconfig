@@ -1,8 +1,44 @@
-﻿@{
+﻿@using DDFrAS;
+@{
     Page.Title = "Title goes here";
-    //Layout = "Your Layout Page goes here";
+    Layout = "_Layout.cshtml";
+    int sw_id = Request.QueryString["id"].AsInt();
+
+    if (sw_id != 0)
+    {
+        <form  method="post">
+            <div class="form-group">
+                <p>
+                    <label>Switch naam:</label>
+                    <input class="form-control" name="switchname" value="@ASselectswitch.name(sw_id)" />
+                </p>
+                <p>
+                    <label>Management ip:</label>
+                    <input class="form-control" name="manip" value="@ASselectswitch.manip(sw_id)" />
+                </p>
+                <p>
+                    <label>Ssh username:</label>
+                    <input class="form-control" name="sshuser" value="@ASselectswitch.sshuser(sw_id)" />
+                </p>
+                <p>
+                    <label>Ssh wachtwoord:</label>
+                    <input class="form-control" name="sshpass" value="@ASselectswitch.sshpass(sw_id)" />
+                </p>
+                <p>
+                    <label>Enable wachtwoord:</label>
+                    <input class="form-control" name="enpass" value="@ASselectswitch.termpass(sw_id)" />
+                </p>
+                <button type="submit">Wijzig</button>
+            </div>
+        </form>
+    }
+    else
+    {
+        Response.Redirect("~/DDFrAS/Switches.cshtml");
+    }
+
+    if (IsPost)
+    { Newvdbinputs.EditSwitch(sw_id, Request.Form["switchname"], Request.Form["manip"], Request.Form["sshuser"], Request.Form["sshpass"], Request.Form["enpass"]); 
+    Response.Redirect(Request.RawUrl);}
+
 }
-
-<div>
-
-</div>

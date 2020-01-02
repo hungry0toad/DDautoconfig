@@ -8,28 +8,52 @@
     var grid = new WebGrid();
     using (var context = new DDFrASEntities()) { var switches = context.SWITCHes.ToList(); grid = new WebGrid(switches); }
 }
-<div>
-    <h3>All Switches:</h3>
+<div class="container">
+    <h3>Alle Switches:</h3>
     <table class="table-responsive">
         @grid.Table(
-    tableStyle: "table table-striped table-hover",
-    columns: grid.Columns(
-        grid.Column("Switch_ID", header: "ID"),
-        grid.Column("Man_IP", header: "Management IP"),
-        grid.Column(format: @<a href="~/DDFrAS/Viewswitch.cshtml?id=@item.Switch_ID">"Zie meer"</a>),
+ tableStyle: "table table-striped table-hover",
+ columns: grid.Columns(
+     grid.Column("Switch_Name", header: "Switch naam"),
+     grid.Column("Man_IP", header: "Management ip"),
+     grid.Column(format: @<a href="~/DDFrAS/Viewswitch.cshtml?id=@item.Switch_ID">Meer/wijzig</a>),
 grid.Column(format: @<a href="~/DDFrAS/Viewswitch.cshtml?id=@item.Switch_ID&edit=true"></a>)))
     </table>
 </div>
-
-@{ if (!edit)
-    {
+@if (IsPost)
+{ Newvdbinputs.NewSwitch(Request.Form["switchname"], Request.Form["manip"], Request.Form["sshuser"], Request.Form["sshpass"], Request.Form["enpass"]); }
+@{if (!edit)
+    {<div class="container">
         <form action="~/DDFrAS/Switches.cshtml">
             <input type="hidden" name="edit" value="true" />
             <button type="submit" class="btn btn-success pull-right">Nieuwe Switch</button>
         </form>
-    }
+    </div>}
     else
     {
-
+        <div class="container">
+            <form method="post">
+                <p>
+                    <label>Switch Naam</label>
+                    <input class="form-control" name="switchname"/>
+                </p>
+                <p>
+                    <label>Management ip</label>
+                    <input class="form-control" name="manip" />
+                </p>
+                <p>
+                    <label>SSH Gebruikersnaam</label>
+                    <input class="form-control" name="sshuser" />
+                </p>
+                <p>
+                    <label>SSH wachtwoord</label>
+                    <input class="form-control" name="sshpass" />
+                </p>
+                <p>
+                    <label>Enable wachtwoord</label>
+                    <input class="form-control" name="enpass" />
+                </p>
+                <button type="submit" class="btn-primary">Voeg toe</button>
+            </form>
+        </div>}
     }
-}

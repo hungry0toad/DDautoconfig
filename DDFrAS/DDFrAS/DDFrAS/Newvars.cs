@@ -7,7 +7,7 @@ using System.Text;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
 
-namespace DDFrAS.DDFrAS
+namespace DDFrAS
 {
     public class Newvdbinputs
     {
@@ -52,22 +52,39 @@ namespace DDFrAS.DDFrAS
 
         //insert new switch into database
 
-        public static void NewSwitch(string ssh_password, string ssh_username, string term_password, string man_ip)
+        public static void NewSwitch(string switch_name, string man_ip, string ssh_username, string ssh_password, string ena_password)
         {
             using (DDFrASEntities context = new DDFrASEntities())
             {
                 SWITCH newswitch = new SWITCH
                 {
-                    //SSH_Password = ssh_password,
-                    //SSH_Username = ssh_username,
-                    //Term_Password = term_password,
-                    //Man_IP = man_ip
+                    SSH_Password = ssh_password,
+                    SSH_Username = ssh_username,
+                    Term_Password = ena_password,
+                    Man_IP = man_ip,
+                    Switch_Name = switch_name
                 };
                 context.SWITCHes.Add(newswitch);
                 context.SaveChanges();
 
             }
 
+        }
+        public static void EditSwitch(int sw_id, string switch_name, string man_ip, string ssh_username, string ssh_password, string ena_password)
+        {
+            using (DDFrASEntities context = new DDFrASEntities())
+            {
+                var editswitch = context.SWITCHes.SingleOrDefault(s => s.Switch_ID == sw_id);
+                if (editswitch != null)
+                {
+                    editswitch.SSH_Password = ssh_password;
+                    editswitch.SSH_Username = ssh_username;
+                    editswitch.Term_Password = ena_password;
+                    editswitch.Man_IP = man_ip;
+                    editswitch.Switch_Name = switch_name;
+                    context.SaveChanges();
+                }
+            }
         }
 
         //public StringBuilder Resultssh(StringBuilder result)
@@ -84,6 +101,45 @@ namespace DDFrAS.DDFrAS
 
 
         //}
+
+    }
+    public class ASselectswitch
+    {
+        public static string name(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Switch_Name).SingleOrDefault();
+            }
+        }
+        public static string sshuser(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.SSH_Username).SingleOrDefault();
+            }
+        }
+        public static string sshpass(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.SSH_Password).SingleOrDefault();
+            }
+        }
+        public static string manip(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Man_IP).SingleOrDefault();
+            }
+        }
+        public static string termpass(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Term_Password).SingleOrDefault();
+            }
+        }
 
     }
 
