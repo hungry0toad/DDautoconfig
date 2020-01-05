@@ -9,7 +9,7 @@ using Renci.SshNet.Sftp;
 
 namespace DDFrAS
 {
-    public class Newvdbinputs
+    public static class Newvdbinputs
     {
         //insert new variables into database
 
@@ -103,7 +103,7 @@ namespace DDFrAS
         //}
 
     }
-    public class ASselectswitch
+    public static class ASselectswitch
     {
         public static string name(int sw_id)
         {
@@ -141,6 +141,16 @@ namespace DDFrAS
             }
         }
 
+    }
+    public static class ASselectstatus
+    {
+        public static List<DDFrAS.CONFIG> Getfailedscripts()
+        {
+            using(var context = new DDFrASEntities())
+            {
+                return context.CONFIGs.Where(s => s.Status == 3).ToList();
+            }
+        }
     }
 
 }

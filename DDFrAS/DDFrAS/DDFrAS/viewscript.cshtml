@@ -5,15 +5,21 @@
     Layout = "_Layout.cshtml";
     //request scriptid from url
     int id = Request.QueryString["id"].AsInt();
-    string config = "";
 
-    //get config data from FE with id
-    using (var context = new DDFrASEntities())
+    if (id != 0)
     {
-        config = context.CONFIGs.Find(id).Script;
-    }
-}
+        //get config data from FE with id
+        using (var context = new DDFrASEntities())
+        {
+            var config = context.CONFIGs.Find(id).Script;
 
-<div>
-    @config
-</div>
+
+            <div>
+                <textarea name="script" style="width: 100%;height:100%" class="form-control">@config</textarea>
+            </div>
+        }
+    }
+    else {Response.Redirect("~/DDFrAS/viewscripts.cshtml");}
+
+
+}

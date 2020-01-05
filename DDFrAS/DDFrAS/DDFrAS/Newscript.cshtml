@@ -5,30 +5,38 @@
     int id = 5;
 }
 @{
-    string ssh_template = "";
     using (var context = new DDFrASEntities())
     {
-        ssh_template = context.SSH_COMMANDS.Find(id).Command_Temp;
-    }
+        var ssh_template = context.SSH_COMMANDS.Find(id).Command_Temp;
 
-    if (IsPost)
-    {
-        //request form data
-        string script = Request.Form["script"];
-        DateTime executedate = Request.Form["executedate"].AsDateTime();
+        if (IsPost)
+        {
+            //request form data
+            string script = Request.Form["script"];
+            DateTime executedate = Request.Form["executedate"].AsDateTime();
+            var now = Request.Form["now"];
+            if (now == "true")
+            {
+                executedate = DateTime.Now;
+            }
 
-        ////push form data to database
-        Newvdbinputs.NewScript(script, executedate, id);
-    }
+            //push form data to database
+            Newvdbinputs.NewScript(script, executedate, id);
+        }
 
 
-}
+
 
 <div class="container text-left">
     <h2>Nieuw Script Maken</h2><br />
-    <form method="post">
-        <textarea name="script" style="width: 100%;height:100%">@ssh_template</textarea>
+    <form method="post" class="form-group">
+        <textarea name="script" style="width: 100%;height:100%" class="form-control">@ssh_template</textarea>
         <input type="datetime-local" name="executedate" value="@DateTime.Now.ToString();" min="@DateTime.Now.ToString();">
-        <button type="submit">Maak nieuw script</button>
+        <p>
+            Voer direct uit? <input type="checkbox" name="now" value="true"/>
+        </p>
+        <button type="submit" class="btn-outline-primary">Plan nieuw script</button>
     </form>
 </div>
+    }
+}
