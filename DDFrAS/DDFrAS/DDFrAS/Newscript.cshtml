@@ -1,45 +1,69 @@
 @using DDFrAS;
 @{
+    Validation.Add("script", Validator.Required("Script mag niet leeg zijn."));
+    Validation.Add("executedate", Validator.DateTime("Dit is geen valide datum en tijd"));
     Page.Title = "Nieuw Script";
     Layout = "_Layout.cshtml";
     int id = 5;
+    int sw_id = 0;
 }
 @{
     using (var context = new DDFrASEntities())
     {
         var ssh_template = context.SSH_COMMANDS.Find(id).Command_Temp;
 
-        if (IsPost)
+        if (IsPost && Validation.IsValid())
         {
             //request form data
             string script = Request.Form["script"];
-            var now = Request.Form["now"];
-            DateTime executedate = Request.Form["executedate"].AsDateTime();
-            if(executedate == DateTime.MinValue || now == "true") { executedate = DateTime.Now; }
-            int sw_id = Request.Form["selectswitch"].AsInt();
+            sw_id = Request.Form["selectswitch"].AsInt();
+            if (script.Contains('{') || script.Contains('}') || script == "")
+            {
+                <div class="container">
+                    <p class="text-danger">Het script moet ingevult zijn en geen "{" of "}" tekens bevatten!</p>
+                </div>
+            }if (sw_id == 0)
+            {
+                <div class="container">
+                    <p class="text-danger">Kies een switch.</p>
+                </div>
+            }else
+            {
+                var now = Request.Form["now"];
+                DateTime executedate = Request.Form["executedate"].AsDateTime();
+                if (executedate == DateTime.MinValue || now == "true") { executedate = DateTime.Now; }
 
-            //push form data to database
-            Newvdbinputs.NewScript(script, executedate, id, sw_id);
-            Response.Redirect("~/DDFrAS/viewscripts.cshtml");
+                //push form data to database
+                Newvdbinputs.NewScript(script, executedate, id, sw_id);
+                Response.Redirect("~/DDFrAS/viewscripts.cshtml");
+            }
         }
 
 
 
 
-<div class="container text-left">
-    <h2>Nieuw Script Maken</h2><br />
-    <form method="post" class="form-group">
-        <textarea name="script" style="width: 100%;height:100%" class="form-control">@ssh_template</textarea>
-        <input type="datetime-local" name="executedate" value="@DateTime.Now.ToString();" min="@DateTime.Now.ToString();">
-        <p>Uitvoeren op switch:<br />
-            @foreach(var sw in ASselectswitch.Getallswitchess())
-            {
-               <input type="radio" name="selectswitch" value="@sw.Switch_ID"/> @sw.Switch_Name<br />
-            }
-        </p>
-            Voer direct uit? <input type="checkbox" name="now" value="true"/><br />
-        <button type="submit" class="btn-outline-primary">Plan nieuw script</button>
-    </form>
-</div>
+        <div class="container text-left">
+            @Html.ValidationSummary(true)
+            <h2>Nieuw Script Maken</h2><br />
+            <form method="post" class="form-group">
+                <div>
+                    <textarea name="script" style="width: 100%;height:100%" class="form-control">@ssh_template</textarea>
+                    @Html.ValidationMessage("script")
+                </div>
+                <div>
+                    <input type="datetime-local" name="executedate" value="@DateTime.Now.ToString();" min="@DateTime.Now.ToString();">
+                </div>
+                <div>
+                    <p>Uitvoeren op switch:</p>
+                    @foreach (var sw in ASselectswitch.Getallswitchess())
+                    {
+                        <input type="radio" name="selectswitch" value="@sw.Switch_ID" /> @sw.Switch_Name<br />
+                    }
+                    @Html.ValidationMessage("switch")
+                </div>
+                Voer direct uit? <input type="checkbox" name="now" value="true" /><br />
+                <button type="submit" class="btn-outline-primary">Plan nieuw script</button>
+            </form>
+        </div>
     }
 }
