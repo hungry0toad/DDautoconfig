@@ -32,7 +32,7 @@ namespace DDFrAS
 
         //insert new script into database
 
-        public static void NewScript(string script, DateTime executedate, int id)
+        public static void NewScript(string script, DateTime executedate, int id, int sw_id)
         {
             using (DDFrASEntities context = new DDFrASEntities())
             {
@@ -41,7 +41,8 @@ namespace DDFrAS
                     Command_ID = id,
                     Script = script,
                     ExDate = executedate,
-                    Status = 0
+                    Status = 0,
+                    Switch_ID = sw_id
                 };
                 context.CONFIGs.Add(configscript);
                 context.SaveChanges();
@@ -105,6 +106,13 @@ namespace DDFrAS
     }
     public static class ASselectswitch
     {
+        public static List<SWITCH> Getallswitchess()
+        {
+            using(var context = new DDFrASEntities())
+            {
+                return context.SWITCHes.ToList();
+            }
+        }
         public static string name(int sw_id)
         {
             using (var context = new DDFrASEntities())
@@ -144,13 +152,43 @@ namespace DDFrAS
     }
     public static class ASselectstatus
     {
-        public static List<DDFrAS.CONFIG> Getfailedscripts()
+        public static List<CONFIG> Getfailedscripts()
         {
             using(var context = new DDFrASEntities())
             {
                 return context.CONFIGs.Where(s => s.Status == 3).ToList();
             }
         }
+        public static string Getstatusstring(int status)
+        {
+            string line = "";
+            if (status == 0)
+            {
+                line = "Nog niet uitgevoerd";
+                return line;
+            }
+            if (status == 1)
+            {
+                line = "succesvol uitgevoerd";
+                return line;
+            }
+            if (status == 2)
+            {
+                line = "Gedeeltelijk mislukt";
+                return line;
+            }
+            if (status == 3)
+            {
+                line = "Mislukt";
+                return line;
+            }
+            else
+            {
+                line = "Onbekend";
+                return line;
+            }
+        }
     }
+
 
 }

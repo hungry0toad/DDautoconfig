@@ -8,23 +8,33 @@
     using (var context = new DDFrASEntities())
     {
         var scripts = context.CONFIGs.ToList();
+        var switches = context.SWITCHes.ToList();
         grid = new WebGrid(scripts);
+        <!---Table for viewing all scripts-->
+        <div class="flex-lg-wrap mb-auto">
+            <h3>Gegenereerde scripts</h3>
+            <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Switch</th>
+                        <th>Status</th>
+                        <th>Uitvoertijd</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                @foreach (var script in scripts)
+                {
+                    <tr>
+                        <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
+                        <td>@ASselectstatus.Getstatusstring(script.Status.GetValueOrDefault())</td>
+                        <td>@script.ExDate</td>
+                        <td><a href="~/DDFrAS/viewscript.cshtml" ?id="@script.Config_ID">Ga naar script</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <form action="~/DDFrAS/Newscript.cshtml">
+            <button class="btn btn-success pull-right" action="~/DDFrAS/Newscript.cshtml">Nieuw Script</button>
+        </form>
     }
 }
-
-    <div class="flex-lg-wrap mb-auto">
-        <h3>Gegenereerde scripts</h3>
-        <table class="table-responsive">
-            @grid.Table(
-           tableStyle: "table table-striped table-hover",
-           columns: grid.Columns(
-               grid.Column("Config_ID", header: "ID"),
-               grid.Column("Status", header: "Status"),
-               grid.Column("ExDate", header: "Uitvoertijd"),
-               grid.Column(format: @<a href="~/DDFrAS/viewscript.cshtml?id=@item.Config_ID">Ga naar script</a>)))
-                </table>
-    </div>
-
-    <form action="~/DDFrAS/Newscript.cshtml">
-        <button class="btn btn-success pull-right" action="~/DDFrAS/Newscript.cshtml">Nieuw Script</button>
-    </form>
