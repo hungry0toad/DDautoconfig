@@ -10,29 +10,10 @@ namespace DDFrAS
 {
     public static class ASInput
     {
-        //insert new variables into database
-
-        //public static void Newvars(string vlan, string manip, string username, string passwordssh, string terminal)
-        //{
-        //    using (DDFrASEntities context = new DDFrASEntities())
-        //    {
-        //        CONFIG_VAR configvar = new CONFIG_VAR
-        //        {
-        //            Vlan = vlan,
-        //            Man_IP = manip,
-        //            Username = username,
-        //            PasswordSSH = passwordssh,
-        //            Terminal = terminal
-        //        };
-        //        context.CONFIG_VAR.Add(configvar);
-        //        context.SaveChanges();
-        //    }
-        //}
-
         //insert new script into database
         public static void NewScript(string script, DateTime executedate, int id, int sw_id)
         {
-            using (DDFrASEntities context = new DDFrASEntities())
+            using (var context = new DDFrASEntities())
             {
                 CONFIG configscript = new CONFIG
                 {
@@ -52,7 +33,7 @@ namespace DDFrAS
         //insert new switch into database
         public static void NewSwitch(string switch_name, string man_ip, string ssh_username, string ssh_password, string ena_password)
         {
-            using (DDFrASEntities context = new DDFrASEntities())
+            using (var context = new DDFrASEntities())
             {
                 SWITCH newswitch = new SWITCH
                 {
@@ -70,7 +51,7 @@ namespace DDFrAS
         }
         public static void EditSwitch(int sw_id, string switch_name, string man_ip, string ssh_username, string ssh_password, string ena_password)
         {
-            using (DDFrASEntities context = new DDFrASEntities())
+            using (var context = new DDFrASEntities())
             {
                 var editswitch = context.SWITCHes.SingleOrDefault(s => s.Switch_ID == sw_id);
                 if (editswitch != null)
@@ -84,68 +65,27 @@ namespace DDFrAS
                 }
             }
         }
+        public static void NewOutput(string output, int config_id, int status)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                if (output != null)
+                {
+                    var addoutput = context.CONFIGs.SingleOrDefault(c => c.Config_ID == config_id);
+                    addoutput.Switch_Output = output;
+                    addoutput.Status = status;
+                    context.SaveChanges();
+                }
+            }
+        }
 
-
-
-    }
-    public static class ASselectswitch
-    {
-        public static List<SWITCH> Getallswitchess()
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return context.SWITCHes.ToList();
-            }
-        }
-        public static string name(int sw_id)
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Switch_Name).SingleOrDefault();
-            }
-        }
-        public static string sshuser(int sw_id)
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.SSH_Username).SingleOrDefault();
-            }
-        }
-        public static string sshpass(int sw_id)
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.SSH_Password).SingleOrDefault();
-            }
-        }
-        public static string manip(int sw_id)
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Man_IP).SingleOrDefault();
-            }
-        }
-        public static string termpass(int sw_id)
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Term_Password).SingleOrDefault();
-            }
-        }
 
     }
-    public static class ASselectstatus
+    public static class ASselect
     {
-        public static List<CONFIG> Getfailedscripts()
+        public static string Getstatus(int status)
         {
-            using (var context = new DDFrASEntities())
-            {
-                return context.CONFIGs.Where(s => s.Status == 3).ToList();
-            }
-        }
-        public static string Getstatusstring(int status)
-        {
-            string line = "";
+            string line;
             if (status == 0)
             {
                 line = "Nog niet uitgevoerd";
@@ -172,10 +112,75 @@ namespace DDFrAS
                 return line;
             }
         }
-        public static class SwitchConnection
+        public static List<CONFIG> Getfailedscripts()
         {
-            public static void SetupConnection(string ip, string username, string password, string enapass, string script)
+            using (var context = new DDFrASEntities())
             {
+                return context.CONFIGs.Where(s => s.Status == 3).ToList();
+            }
+        }
+        public static List<SWITCH> AllSwitches()
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return context.SWITCHes.ToList();
+            }
+        }
+        public static string Switchname(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Switch_Name).SingleOrDefault();
+            }
+        }
+        public static string Switchsshuser(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.SSH_Username).SingleOrDefault();
+            }
+        }
+        public static string Switchsshpass(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.SSH_Password).SingleOrDefault();
+            }
+        }
+        public static string Switchmanip(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Man_IP).SingleOrDefault();
+            }
+        }
+        public static string Switchtermpass(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Term_Password).SingleOrDefault();
+            }
+        }
+        public static string Script(int config_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return (from c in context.CONFIGs where c.Config_ID.Equals(config_id) select c.Script).SingleOrDefault();
+            }
+
+        }
+    }
+    public static class ASsshconnection
+    {
+        public static void SetupConnection(int switch_id, int configid)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                string ip = ASselect.Switchmanip(switch_id);
+                string username = ASselect.Switchsshuser(switch_id);
+                string password = ASselect.Switchsshpass(switch_id);
+                string enablepass = ASselect.Switchtermpass(switch_id);
+
                 ConnectionInfo Conninfo = new ConnectionInfo(ip, 22, username, new AuthenticationMethod[]
                 {
 
@@ -185,13 +190,26 @@ namespace DDFrAS
                 using (var sshclient = new SshClient(Conninfo))
                 {
                     sshclient.Connect();
-                    using(var cmd = sshclient.CreateCommand(script))
+                    string script = "enable\r" +ASselect.Switchtermpass(switch_id) + ASselect.Script(configid);
+                    using (var cmd = sshclient.CreateCommand(script))
                     {
                         cmd.Execute();
-                        
+                        int status = ASsshconnection.Scanoutput(cmd.Result);
+                        ASInput.NewOutput(cmd.Result, configid, status);
                     }
                 }
+            }
 
+        }
+        public static int Scanoutput(string output)
+        {
+            if (output.Contains("Invalid"))
+            {
+                return 3;
+            }
+            else
+            {
+                return 0;
             }
         }
     }

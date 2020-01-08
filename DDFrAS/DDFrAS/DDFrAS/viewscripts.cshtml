@@ -26,9 +26,9 @@
                 {
                     <tr>
                         <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
-                        <td>@ASselectstatus.Getstatusstring(script.Status.GetValueOrDefault())</td>
+                        <td>@ASselect.Getstatus(script.Status.GetValueOrDefault())</td>
                         <td>@script.ExDate</td>
-                        <td><a href="~/DDFrAS/viewscript.cshtml" ?id="@script.Config_ID">Ga naar script</a></td>
+                        <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Ga naar script</a></td>
                     </tr>
                 }
             </table>

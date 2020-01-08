@@ -29,7 +29,7 @@
                 <a href="#" class="list-group-item list-group-item-action bg-notlight"><i class="fa fa-calendar"></i> Planning</a>
                 <a href="#" class="list-group-item list-group-item-action bg-notlight"><i class="fa fa-history"></i> Geschiedenis</a>
                 <a href="~/DDFrAS/viewscripts.cshtml" class="list-group-item list-group-item-action bg-notlight"><i class="fa fa-plus-square"></i> Scripts</a>
-                <a href="~/DDFrAS/Switches.cshtml" class="list-group-item list-group-item-action bg-notlight"><i class="fa fa-plus-square"></i>Switches</a>
+                <a href="~/DDFrAS/Switches.cshtml" class="list-group-item list-group-item-action bg-notlight"><i class="fa fa-plus-square"></i> Switches</a>
             </div>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -45,7 +45,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                        @{var notifs = ASselectstatus.Getfailedscripts();
+                        @{var notifs = ASselect.Getfailedscripts();
                             <li class="nav-item dropdown" style="color:white">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fa fa-bell"></i> Meldingen

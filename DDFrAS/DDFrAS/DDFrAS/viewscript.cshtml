@@ -6,20 +6,36 @@
     //request scriptid from url
     int id = Request.QueryString["id"].AsInt();
 
+    //Run script on buttonpush
+    if (IsPost)
+    {
+
+    }
     if (id != 0)
     {
         //get config data from FE with id
         using (var context = new DDFrASEntities())
         {
-            var config = context.CONFIGs.Find(id).Script;
+            var config = context.CONFIGs.Find(id);
+            if(config == null)
+            {
+                Response.Redirect("~/DDFrAS/viewscripts.cshtml");
+            }
 
-
-            <div>
-                <textarea name="script" style="width: 100%;height:100%" class="form-control">@config</textarea>
+            <div class="container float-left">
+                <h5>Uitgevoerde script:</h5>
+                <textarea name="script" style="width: 100%;height:100%" class="form-control">@config.Script</textarea>
+            </div>
+            <div class="container float-left">
+                <h5>Output:</h5>
+                <textarea name="script" style="width: 100%;height:100%" class="form-control">@config.Switch_Output</textarea>
+                <form method="post">
+                    <button class="btn btn-danger">Voer uit</button>
+                </form>
             </div>
         }
     }
-    else {Response.Redirect("~/DDFrAS/viewscripts.cshtml");}
+    else { Response.Redirect("~/DDFrAS/viewscripts.cshtml"); }
 
 
 }

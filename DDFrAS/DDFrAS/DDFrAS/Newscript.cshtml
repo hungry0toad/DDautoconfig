@@ -22,19 +22,29 @@
                 <div class="container">
                     <p class="text-danger">Het script moet ingevult zijn en geen "{" of "}" tekens bevatten!</p>
                 </div>
-            }if (sw_id == 0)
+            }
+            if (sw_id == 0)
             {
                 <div class="container">
                     <p class="text-danger">Kies een switch.</p>
                 </div>
-            }else
+            }
+            else
             {
                 var now = Request.Form["now"];
                 DateTime executedate = Request.Form["executedate"].AsDateTime();
-                if (executedate == DateTime.MinValue || now == "true") { executedate = DateTime.Now; }
+                if (executedate == DateTime.MinValue || now == "true")
+                {
+                    executedate = DateTime.Now;
+                    ASInput.NewScript(script, executedate, id, sw_id);
+                    ASsshconnection.SetupConnection(sw_id, context.CONFIGs.Where(s => s.Switch_ID == sw_id).Select(c => c.Config_ID).FirstOrDefault());
+                        }
+                else
+                {
+                    //push form data to database
+                    ASInput.NewScript(script, executedate, id, sw_id);
+                }
 
-                //push form data to database
-                ASInput.NewScript(script, executedate, id, sw_id);
                 Response.Redirect("~/DDFrAS/viewscripts.cshtml");
             }
         }
@@ -55,7 +65,7 @@
                 </div>
                 <div>
                     <p>Uitvoeren op switch:</p>
-                    @foreach (var sw in ASselectswitch.Getallswitchess())
+                    @foreach (var sw in ASselect.AllSwitches())
                     {
                         <input type="radio" name="selectswitch" value="@sw.Switch_ID" /> @sw.Switch_Name<br />
                     }
