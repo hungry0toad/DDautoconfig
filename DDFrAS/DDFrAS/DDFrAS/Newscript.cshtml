@@ -34,7 +34,7 @@
                 if (executedate == DateTime.MinValue || now == "true") { executedate = DateTime.Now; }
 
                 //push form data to database
-                Newvdbinputs.NewScript(script, executedate, id, sw_id);
+                ASInput.NewScript(script, executedate, id, sw_id);
                 Response.Redirect("~/DDFrAS/viewscripts.cshtml");
             }
         }

@@ -38,7 +38,7 @@
     }
 
     if (IsPost)
-    { Newvdbinputs.EditSwitch(sw_id, Request.Form["switchname"], Request.Form["manip"], Request.Form["sshuser"], Request.Form["sshpass"], Request.Form["enpass"]); 
+    { ASInput.EditSwitch(sw_id, Request.Form["switchname"], Request.Form["manip"], Request.Form["sshuser"], Request.Form["sshpass"], Request.Form["enpass"]); 
     Response.Redirect(Request.RawUrl);}
 
 }

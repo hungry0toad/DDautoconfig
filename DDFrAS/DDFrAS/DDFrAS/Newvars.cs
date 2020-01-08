@@ -5,33 +5,31 @@ using System.Linq;
 using System.Web;
 using System.Text;
 using Renci.SshNet;
-using Renci.SshNet.Sftp;
 
 namespace DDFrAS
 {
-    public static class Newvdbinputs
+    public static class ASInput
     {
         //insert new variables into database
 
-        public static void Newvars(string vlan, string manip, string username, string passwordssh, string terminal)
-        {
-            using (DDFrASEntities context = new DDFrASEntities())
-            {
-                CONFIG_VAR configvar = new CONFIG_VAR
-                {
-                    //Vlan = vlan,
-                    //Man_IP = manip,
-                    //Username = username,
-                    //PasswordSSH = passwordssh,
-                    //Terminal = terminal
-                };
-                context.CONFIG_VAR.Add(configvar);
-                context.SaveChanges();
-            }
-        }
+        //public static void Newvars(string vlan, string manip, string username, string passwordssh, string terminal)
+        //{
+        //    using (DDFrASEntities context = new DDFrASEntities())
+        //    {
+        //        CONFIG_VAR configvar = new CONFIG_VAR
+        //        {
+        //            Vlan = vlan,
+        //            Man_IP = manip,
+        //            Username = username,
+        //            PasswordSSH = passwordssh,
+        //            Terminal = terminal
+        //        };
+        //        context.CONFIG_VAR.Add(configvar);
+        //        context.SaveChanges();
+        //    }
+        //}
 
         //insert new script into database
-
         public static void NewScript(string script, DateTime executedate, int id, int sw_id)
         {
             using (DDFrASEntities context = new DDFrASEntities())
@@ -52,7 +50,6 @@ namespace DDFrAS
         }
 
         //insert new switch into database
-
         public static void NewSwitch(string switch_name, string man_ip, string ssh_username, string ssh_password, string ena_password)
         {
             using (DDFrASEntities context = new DDFrASEntities())
@@ -88,27 +85,14 @@ namespace DDFrAS
             }
         }
 
-        //public StringBuilder Resultssh(StringBuilder result)
-        //{
-        //    return result;
-        //}
 
-        //public static void ssh_connection(string ip, string username, string userpassword, string enablepass, string command)
-        //{
-        //    StringBuilder result = new StringBuilder();
-        //    var client = new SshClient(ip, username, userpassword);
-        //    client.Connect();
-        //    result.Append(client.RunCommand(command).Execute() + "\r\n");
-
-
-        //}
 
     }
     public static class ASselectswitch
     {
         public static List<SWITCH> Getallswitchess()
         {
-            using(var context = new DDFrASEntities())
+            using (var context = new DDFrASEntities())
             {
                 return context.SWITCHes.ToList();
             }
@@ -154,7 +138,7 @@ namespace DDFrAS
     {
         public static List<CONFIG> Getfailedscripts()
         {
-            using(var context = new DDFrASEntities())
+            using (var context = new DDFrASEntities())
             {
                 return context.CONFIGs.Where(s => s.Status == 3).ToList();
             }
@@ -188,7 +172,27 @@ namespace DDFrAS
                 return line;
             }
         }
+        public static class SwitchConnection
+        {
+            public static void SetupConnection(string ip, string username, string password, string enapass, string script)
+            {
+                ConnectionInfo Conninfo = new ConnectionInfo(ip, 22, username, new AuthenticationMethod[]
+                {
+
+                    new PasswordAuthenticationMethod(username, password)
+                });
+
+                using (var sshclient = new SshClient(Conninfo))
+                {
+                    sshclient.Connect();
+                    using(var cmd = sshclient.CreateCommand(script))
+                    {
+                        cmd.Execute();
+                        
+                    }
+                }
+
+            }
+        }
     }
-
-
 }

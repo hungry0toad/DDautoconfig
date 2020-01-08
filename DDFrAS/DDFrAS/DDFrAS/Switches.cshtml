@@ -26,7 +26,7 @@ grid.Column(format: @<a href="~/DDFrAS/Viewswitch.cshtml?id=@item.Switch_ID&edit
     </table>
 </div>
 @if (IsPost && Validation.IsValid())
-{ Newvdbinputs.NewSwitch(Request.Form["switchname"], Request.Form["manip"], Request.Form["sshuser"], Request.Form["sshpass"], Request.Form["enpass"]); }
+{ ASInput.NewSwitch(Request.Form["switchname"], Request.Form["manip"], Request.Form["sshuser"], Request.Form["sshpass"], Request.Form["enpass"]); }
 @{if (!edit)
     {<div class="container">
             <form action="~/DDFrAS/Switches.cshtml">
