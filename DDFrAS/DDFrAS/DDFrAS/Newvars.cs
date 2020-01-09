@@ -180,6 +180,7 @@ namespace DDFrAS
                 string username = ASselect.Switchsshuser(switch_id);
                 string password = ASselect.Switchsshpass(switch_id);
                 string enablepass = ASselect.Switchtermpass(switch_id);
+                string newline = System.Environment.NewLine;
 
                 ConnectionInfo Conninfo = new ConnectionInfo(ip, 22, username, new AuthenticationMethod[]
                 {
@@ -190,7 +191,7 @@ namespace DDFrAS
                 using (var sshclient = new SshClient(Conninfo))
                 {
                     sshclient.Connect();
-                    string script = "enable\r" +ASselect.Switchtermpass(switch_id) + ASselect.Script(configid);
+                    string script = "enable" + newline + ASselect.Switchtermpass(switch_id) + newline + ASselect.Script(configid);
                     using (var cmd = sshclient.CreateCommand(script))
                     {
                         cmd.Execute();
@@ -201,15 +202,19 @@ namespace DDFrAS
             }
 
         }
+        //scan output for undesirable output/words
         public static int Scanoutput(string output)
         {
-            if (output.Contains("Invalid"))
+            if(output == null)
             {
                 return 3;
+            }else if (output.Contains("Invalid"))
+            {
+                return 2;
             }
             else
             {
-                return 0;
+                return 1;
             }
         }
     }
