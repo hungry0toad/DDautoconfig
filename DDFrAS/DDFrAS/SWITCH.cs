@@ -14,16 +14,9 @@ namespace DDFrAS
     
     public partial class SWITCH
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SWITCH()
-        {
-            this.PORTs = new HashSet<PORT>();
-        }
-    
         public int Switch_ID { get; set; }
         public string Switch_Name { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PORT> PORTs { get; set; }
+        public virtual PORT PORT { get; set; }
     }
 }

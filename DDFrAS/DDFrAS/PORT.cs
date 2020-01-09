@@ -14,18 +14,10 @@ namespace DDFrAS
     
     public partial class PORT
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PORT()
-        {
-            this.CONFIGs = new HashSet<CONFIG>();
-        }
-    
         public int Port_ID { get; set; }
-        public Nullable<int> Switch_ID { get; set; }
         public string Port_Name { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CONFIG> CONFIGs { get; set; }
+        public virtual CONFIG CONFIG { get; set; }
         public virtual SWITCH SWITCH { get; set; }
     }
 }

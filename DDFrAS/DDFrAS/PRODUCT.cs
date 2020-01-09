@@ -14,16 +14,9 @@ namespace DDFrAS
     
     public partial class PRODUCT
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PRODUCT()
-        {
-            this.CONFIGs = new HashSet<CONFIG>();
-        }
-    
         public int Product_ID { get; set; }
         public string Product_Name { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CONFIG> CONFIGs { get; set; }
+        public virtual CONFIG CONFIG { get; set; }
     }
 }

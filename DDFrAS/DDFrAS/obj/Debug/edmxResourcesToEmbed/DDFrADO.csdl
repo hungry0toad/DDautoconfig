@@ -34,8 +34,8 @@
       <PropertyRef Name="Config_ID" />
     </Key>
     <Property Name="Config_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Line_ID" Type="Int32" />
-    <Property Name="Status" Type="Int32" />
+    <Property Name="Line_ID" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="Int32" Nullable="false" />
     <Property Name="ExDate" Type="DateTime" Precision="0" />
     <Property Name="Script" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="CONFIG_VAR" Relationship="DDFrASModel.FK_CONFIG_ToCONFIG_VAR" FromRole="CONFIG" ToRole="CONFIG_VAR" />

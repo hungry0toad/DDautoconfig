@@ -14,20 +14,14 @@ namespace DDFrAS
     
     public partial class CONFIG_VAR
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public CONFIG_VAR()
-        {
-            this.CONFIGs = new HashSet<CONFIG>();
-        }
-    
-        public int Config_var_ID { get; set; }
-        public string Vlan { get; set; }
+        public int CONFIG_VAR_ID { get; set; }
+        public int Vlan { get; set; }
         public string Man_IP { get; set; }
         public string Username { get; set; }
+        public string Password { get; set; }
         public string PasswordSSH { get; set; }
         public string Terminal { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CONFIG> CONFIGs { get; set; }
+        public virtual CONFIG CONFIG { get; set; }
     }
 }

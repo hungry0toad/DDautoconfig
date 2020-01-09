@@ -14,17 +14,10 @@ namespace DDFrAS
     
     public partial class SSH_COMMANDS
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SSH_COMMANDS()
-        {
-            this.CONFIGs = new HashSet<CONFIG>();
-        }
-    
         public int Command_ID { get; set; }
         public string Command_Name { get; set; }
         public string Command_Temp { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CONFIG> CONFIGs { get; set; }
+        public virtual CONFIG CONFIG { get; set; }
     }
 }

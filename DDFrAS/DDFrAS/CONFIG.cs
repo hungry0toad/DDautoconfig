@@ -15,12 +15,8 @@ namespace DDFrAS
     public partial class CONFIG
     {
         public int Config_ID { get; set; }
-        public Nullable<int> Port_ID { get; set; }
-        public Nullable<int> Config_var_ID { get; set; }
-        public Nullable<int> Product_ID { get; set; }
-        public Nullable<int> Command_ID { get; set; }
-        public Nullable<int> Line_ID { get; set; }
-        public Nullable<int> Status { get; set; }
+        public int Line_ID { get; set; }
+        public int Status { get; set; }
         public Nullable<System.DateTime> ExDate { get; set; }
         public string Script { get; set; }
     
