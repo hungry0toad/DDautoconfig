@@ -1,79 +1,51 @@
-@using DDFrAS;
+﻿@using DDFrAS;
 @{
-    Validation.Add("script", Validator.Required("Script mag niet leeg zijn."));
-    Validation.Add("executedate", Validator.DateTime("Dit is geen valide datum en tijd"));
-    Page.Title = "Nieuw Script";
+    Page.Title = "Title goes here";
     Layout = "_Layout.cshtml";
-    int id = 5;
-    int sw_id = 0;
 }
+
 @{
-    using (var context = new DDFrASEntities())
+    int lineid = 1;
+    int status = 1;
+    DateTime datetime = DateTime.Now;
+    string script = "SCRIPTTEST";
+    int vlan = 123;
+    string manip = "192.168.1.105";
+    string username = "username";
+    string passwordssh = "class";
+    string termpass = "system";
+    string productname = "Parc Access";
+
+    using (DDFrASEntities context = new DDFrASEntities())
     {
-        var ssh_template = context.SSH_COMMANDS.Find(id).Command_Temp;
-
-        if (IsPost && Validation.IsValid())
+        CONFIG config = new CONFIG
         {
-            //request form data
-            string script = Request.Form["script"];
-            sw_id = Request.Form["selectswitch"].AsInt();
-            if (script.Contains('{') || script.Contains('}') || script == "")
-            {
-                <div class="container">
-                    <p class="text-danger">Het script moet ingevult zijn en geen "{" of "}" tekens bevatten!</p>
-                </div>
-            }
-            if (sw_id == 0)
-            {
-                <div class="container">
-                    <p class="text-danger">Kies een switch.</p>
-                </div>
-            }
-            else
-            {
-                var now = Request.Form["now"];
-                DateTime executedate = Request.Form["executedate"].AsDateTime();
-                if (executedate == DateTime.MinValue || now == "true")
-                {
-                    executedate = DateTime.Now;
-                    ASInput.NewScript(script, executedate, id, sw_id);
-                    ASsshconnection.SetupConnection(sw_id, context.CONFIGs.Where(s => s.Switch_ID == sw_id).Select(c => c.Config_ID).FirstOrDefault());
-                        }
-                else
-                {
-                    //push form data to database
-                    ASInput.NewScript(script, executedate, id, sw_id);
-                }
+            Line_ID = lineid,
+            Status = status,
+            ExDate = datetime,
+            Script = script
+        };
 
-                Response.Redirect("~/DDFrAS/viewscripts.cshtml");
-            }
-        }
+        CONFIG_VAR configvar = new CONFIG_VAR
+        {
+            Vlan = vlan,
+            Man_IP = manip,
+            Username = username,
+            PasswordSSH = passwordssh,
+            Terminal = termpass
+        };
+        context.CONFIGs.Add(config);
+        context.CONFIG_VAR.Add(configvar);
 
 
+        context.SaveChanges();
+        
 
-
-        <div class="container text-left">
-            @Html.ValidationSummary(true)
-            <h2>Nieuw Script Maken</h2><br />
-            <form method="post" class="form-group">
-                <div>
-                    <textarea name="script" style="width: 100%;height:100%" class="form-control">@ssh_template</textarea>
-                    @Html.ValidationMessage("script")
-                </div>
-                <div>
-                    <input type="datetime-local" name="executedate" value="@DateTime.Now.ToString();" min="@DateTime.Now.ToString();">
-                </div>
-                <div>
-                    <p>Uitvoeren op switch:</p>
-                    @foreach (var sw in ASselect.AllSwitches())
-                    {
-                        <input type="radio" name="selectswitch" value="@sw.Switch_ID" /> @sw.Switch_Name<br />
-                    }
-                    @Html.ValidationMessage("switch")
-                </div>
-                Voer direct uit? <input type="checkbox" name="now" value="true" /><br />
-                <button type="submit" class="btn-outline-primary">Plan nieuw script</button>
-            </form>
-        </div>
     }
+
+
 }
+
+<div>
+    <h1></h1>
+</div>
