@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Owin;
 using Owin;
 using Hangfire.SqlServer;
+using System.Diagnostics;
 
 [assembly: OwinStartup(typeof(DDFrAS.Startup))]
 
@@ -21,12 +22,14 @@ namespace DDFrAS
             JobStorage.Current = new MemoryStorage();
             
             app.UseHangfireDashboard();
-
+            app.UseHangfireServer();
 
             app.UseHangfireDashboard("/hangfire", new DashboardOptions()
             {
                 Authorization = new[] { new MyAuthorizationFilter() }
             });
+
+            BackgroundJob.Enqueue(() => Debug.WriteLine("sup"));
         }
 
         public class MyAuthorizationFilter : IDashboardAuthorizationFilter

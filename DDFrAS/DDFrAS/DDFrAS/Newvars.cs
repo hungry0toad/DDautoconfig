@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Text;
 using Renci.SshNet;
+using Hangfire;
 
 namespace DDFrAS
 {
@@ -26,9 +27,8 @@ namespace DDFrAS
                 };
                 context.CONFIGs.Add(configscript);
                 context.SaveChanges();
-
             }
-
+            ASHangfire.AddTask(id);
         }
 
         //insert new switch into database
@@ -51,6 +51,7 @@ namespace DDFrAS
             }
 
         }
+
         public static void EditSwitch(int sw_id, string switch_name, string man_ip, string ssh_username, string ssh_password, string ena_password)
         {
             using (var context = new DDFrASEntities())
@@ -80,9 +81,16 @@ namespace DDFrAS
                 }
             }
         }
-
-
     }
+
+    public class ASHangfire
+    {
+        public static void AddTask(int Config_id)
+        {
+            BackgroundJob.Enqueue(() => ASsshconnection.SetupConnection(Config_id));
+        }
+    }
+
     public static class ASselect
     {
         public static string Getstatus(int status)
@@ -174,10 +182,12 @@ namespace DDFrAS
     }
     public static class ASsshconnection
     {
-        public static void SetupConnection(int switch_id, int configid)
+        public static void SetupConnection(int configid)
         {
             using (var context = new DDFrASEntities())
             {
+                var switch_id = (context.CONFIGs.Where(c => c.Config_ID == configid).Select(s => s.Switch_ID).Single().Value);
+                //int switch_id = (from c in context.CONFIGs where c.Config_var_ID.Equals(configid) select c.Switch_ID).SingleOrDefault();
                 string ip = ASselect.Switchmanip(switch_id);
                 string username = ASselect.Switchsshuser(switch_id);
                 string password = ASselect.Switchsshpass(switch_id);
