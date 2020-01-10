@@ -15,13 +15,14 @@ namespace DDFrAS
         {
             using (var context = new DDFrASEntities())
             {
+                //Create new config entity
                 CONFIG configscript = new CONFIG
                 {
-                    Command_ID = id,
-                    Script = script,
-                    ExDate = executedate,
-                    Status = 0,
-                    Switch_ID = sw_id
+                    Command_ID = id, //add foreign key from config_var table to config entity
+                    Script = script, //add  to config entity 
+                    ExDate = executedate, //add  to config entity
+                    Status = 0, //add  to config entity
+                    Switch_ID = sw_id //add  to config entity
                 };
                 context.CONFIGs.Add(configscript);
                 context.SaveChanges();
@@ -35,16 +36,17 @@ namespace DDFrAS
         {
             using (var context = new DDFrASEntities())
             {
+                //Create new switch entity
                 SWITCH newswitch = new SWITCH
                 {
-                    SSH_Password = ssh_password,
-                    SSH_Username = ssh_username,
-                    Term_Password = ena_password,
-                    Man_IP = man_ip,
-                    Switch_Name = switch_name
+                    SSH_Password = ssh_password, //Add ssh password to switch entity
+                    SSH_Username = ssh_username, //Add ssh username to switch entity
+                    Term_Password = ena_password, //Add terminal password to switch entity
+                    Man_IP = man_ip, //Add management/ssh connection ip to switch entity
+                    Switch_Name = switch_name //Add name of switch to switch entity
                 };
-                context.SWITCHes.Add(newswitch);
-                context.SaveChanges();
+                context.SWITCHes.Add(newswitch); //Add new switch entity to FE
+                context.SaveChanges(); //Savechanges to database
 
             }
 
