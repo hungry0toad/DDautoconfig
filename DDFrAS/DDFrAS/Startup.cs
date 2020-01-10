@@ -1,27 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Threading.Tasks;
 using Hangfire;
-using Microsoft.Extensions.DependencyInjection;
-using Hangfire.SqlServer;
+using Hangfire.Dashboard;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Owin;
+using Owin;
+using Hangfire.SqlServer;
+
+[assembly: OwinStartup(typeof(DDFrAS.Startup))]
 
 namespace DDFrAS
 {
     public class Startup
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void Configuration(IAppBuilder app)
         {
-            services.AddHangfire(x => x.UseSqlServerStorage("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\frede\\DDautoconfig\\DDFrAS\\DDFrAS\\App_Data\\DDFrAS.mdf;Integrated Security=True;MultipleActiveResultSets=True;Connect Timeout=30;Application Name=EntityFramework"));
-            services.AddHangfireServer();
-        }
-
-        public void Configure(IApplicationBuilder app)
-        {
+            JobStorage.Current = new MemoryStorage();
+            
             app.UseHangfireDashboard();
-        }
-    
 
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions()
+            {
+                Authorization = new[] { new MyAuthorizationFilter() }
+            });
+        }
+
+        public class MyAuthorizationFilter : IDashboardAuthorizationFilter
+        {
+            public bool Authorize(DashboardContext context)
+            {
+                var httpContext = context.GetHttpContext();
+
+                // Allow all authenticated users to see the Dashboard (potentially dangerous).
+                return httpContext.User.Identity.IsAuthenticated;
+
+            }
+        }
     }
 }
+
+ 
+    
+        
+
+    
