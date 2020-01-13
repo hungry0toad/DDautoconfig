@@ -19,11 +19,11 @@ namespace DDFrAS
                 //Create new config entity
                 CONFIG configscript = new CONFIG
                 {
-                    Command_ID = id, //add foreign key from config_var table to config entity
-                    Script = script, //add  to config entity 
-                    ExDate = executedate, //add  to config entity
-                    Status = 0, //add  to config entity
-                    Switch_ID = sw_id //add  to config entity
+                    Command_ID = id, //add foreign key from SSH_COMMANDS table (script template) to config entity
+                    Script = script, //add the fillid in script to config entity 
+                    ExDate = executedate, //add the execute date to config entity
+                    Status = 0, //add initial status code 0 (not yet executed) to config entity
+                    Switch_ID = sw_id //add the corresponding switch to config entity
                 };
                 context.CONFIGs.Add(configscript);
                 context.SaveChanges();
@@ -93,33 +93,38 @@ namespace DDFrAS
 
     public static class ASselect
     {
+        public static List<CONFIG> Getconfignotexecuted()
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return context.CONFIGs.Where(c => c.Status == 0).ToList();
+            }
+        }
         public static string Getstatus(int status)
         {
-            string line;
             if (status == 0)
             {
-                line = "Nog niet uitgevoerd";
-                return line;
+                return "Nog niet uitgevoerd";
             }
             if (status == 1)
             {
-                line = "succesvol uitgevoerd";
-                return line;
+                return "succesvol uitgevoerd";
             }
             if (status == 2)
             {
-                line = "Gedeeltelijk mislukt";
-                return line;
+                return "Gedeeltelijk mislukt";
             }
             if (status == 3)
             {
-                line = "Mislukt";
-                return line;
+                return "Mislukt";
+            }
+            if( status == 4)
+            {
+                return "SSH timeout";
             }
             else
             {
-                line = "Onbekend";
-                return line;
+                return "Onbekend";
             }
         }
         public static List<CONFIG> Getfailedscripts()
@@ -186,8 +191,7 @@ namespace DDFrAS
         {
             using (var context = new DDFrASEntities())
             {
-                var switch_id = (context.CONFIGs.Where(c => c.Config_ID == configid).Select(s => s.Switch_ID).Single().Value);
-                //int switch_id = (from c in context.CONFIGs where c.Config_var_ID.Equals(configid) select c.Switch_ID).SingleOrDefault();
+                int switch_id = (context.CONFIGs.Where(c => c.Config_ID.Equals(configid)).Select(c => c.Switch_ID).FirstOrDefault());
                 string ip = ASselect.Switchmanip(switch_id);
                 string username = ASselect.Switchsshuser(switch_id);
                 string password = ASselect.Switchsshpass(switch_id);
@@ -202,13 +206,20 @@ namespace DDFrAS
 
                 using (var sshclient = new SshClient(Conninfo))
                 {
-                    sshclient.Connect();
-                    string script = "enable" + newline + ASselect.Switchtermpass(switch_id) + newline + ASselect.Script(configid);
-                    using (var cmd = sshclient.CreateCommand(script))
+                    try
                     {
-                        cmd.Execute();
-                        int status = ASsshconnection.Scanoutput(cmd.Result);
-                        ASInput.NewOutput(cmd.Result, configid, status);
+                        sshclient.Connect();
+                        string script = "enable" + newline + ASselect.Switchtermpass(switch_id) + newline + ASselect.Script(configid);
+                        using (var cmd = sshclient.CreateCommand(script))
+                        {
+                            cmd.Execute();
+                            int status = ASsshconnection.Scanoutput(cmd.Result);
+                            ASInput.NewOutput(cmd.Result, configid, status);
+                        }
+                    }
+                    catch
+                    {
+                        ASInput.NewOutput("SSH timeout", configid, 4);
                     }
                 }
             }

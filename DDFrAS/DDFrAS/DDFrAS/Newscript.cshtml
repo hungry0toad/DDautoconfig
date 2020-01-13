@@ -1,22 +1,22 @@
 @using DDFrAS;
 @{
-    Validation.Add("script", Validator.Required("Script mag niet leeg zijn."));
     Validation.Add("executedate", Validator.DateTime("Dit is geen valide datum en tijd"));
     Page.Title = "Nieuw Script";
     Layout = "_Layout.cshtml";
-    int id = 5;
+    int varid = 5;
     int sw_id = 0;
 }
 @{
     using (var context = new DDFrASEntities())
     {
-        var ssh_template = context.SSH_COMMANDS.Find(id).Command_Temp;
-
+        //Fetch script template
+        var ssh_template = context.SSH_COMMANDS.Find(varid).Command_Temp;
         if (IsPost && Validation.IsValid())
         {
             //request form data
             string script = Request.Form["script"];
             sw_id = Request.Form["selectswitch"].AsInt();
+            DateTime executedate = Request.Form["executedate"].AsDateTime();
             if (script.Contains('{') || script.Contains('}') || script == "")
             {
                 <div class="container">
@@ -29,28 +29,31 @@
                     <p class="text-danger">Kies een switch.</p>
                 </div>
             }
+            if (executedate < DateTime.Now)
+            {
+                <div class="container">
+                    <p class="text-danger">Taken kunnen niet in het verleden worden uitgevoerd.</p>
+                </div>
+            }
             else
             {
                 var now = Request.Form["now"];
-                DateTime executedate = Request.Form["executedate"].AsDateTime();
+
                 if (executedate == DateTime.MinValue || now == "true")
                 {
                     executedate = DateTime.Now;
-                    ASInput.NewScript(script, executedate, id, sw_id);
-                    ASsshconnection.SetupConnection(sw_id, context.CONFIGs.Where(s => s.Switch_ID == sw_id).Select(c => c.Config_ID).FirstOrDefault());
-                        }
+                    ASInput.NewScript(script, executedate, varid, sw_id);
+                    //ASsshconnection.SetupConnection(context.CONFIGs.Where(s => s.Switch_ID == sw_id).Select(c => c.Config_ID).FirstOrDefault());
+                }
                 else
                 {
                     //push form data to database
-                    ASInput.NewScript(script, executedate, id, sw_id);
+                    ASInput.NewScript(script, executedate, varid, sw_id);
                 }
 
                 Response.Redirect("~/DDFrAS/viewscripts.cshtml");
             }
         }
-
-
-
 
         <div class="container text-left">
             @Html.ValidationSummary(true)

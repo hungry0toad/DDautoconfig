@@ -7,34 +7,95 @@
     var grid = new WebGrid();
     using (var context = new DDFrASEntities())
     {
-        var scripts = context.CONFIGs.ToList();
-        var switches = context.SWITCHes.ToList();
-        grid = new WebGrid(scripts);
-        <!---Table for viewing all scripts-->
-        <div class="flex-lg-wrap mb-auto">
-            <h3>Gegenereerde scripts</h3>
-            <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>Switch</th>
-                        <th>Status</th>
-                        <th>Uitvoertijd</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                @foreach (var script in scripts)
-                {
-                    <tr>
-                        <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
-                        <td>@ASselect.Getstatus(script.Status.GetValueOrDefault())</td>
-                        <td>@script.ExDate</td>
-                        <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Ga naar script</a></td>
-                    </tr>
-                }
-            </table>
+        int planned=0;
+        int executed=0;
+        var scripts = context.CONFIGs.ToList(); //Fetch all config entities
+        foreach (var script in scripts){if(script.Status == 0) { planned++;}} //check if there are any planned scripts
+        foreach (var script in scripts){if(script.Status != 0) { executed++;}} //check if there are any executed scripts
+        var switches = context.SWITCHes.ToList(); //Fetch all switch entities
+
+        //Table for planned scripts if there are configs in the DB
+        <div class="bg-dark text-white">
+            <div class="container-lg col-10"><h4>Geplande scripts</h4></div>
         </div>
-        <form action="~/DDFrAS/Newscript.cshtml">
-            <button class="btn btn-success pull-right" action="~/DDFrAS/Newscript.cshtml">Nieuw Script</button>
-        </form>
+        <div class="container col border-bottom">
+            @if (scripts.Count > 1 && planned>0)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Switch</th>
+                            <th>Status</th>
+                            <th>Uitvoer</th>
+                            <th>Output en direct-terminal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var script in scripts)
+                        {
+                            if (script.Status == 0)
+                            {
+                                <tr>
+                                    <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
+                                    <td>@ASselect.Getstatus(script.Status)</td>
+                                    <td>@script.ExDate</td>
+                                    <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Zien</a></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="text-body">
+                    <p>
+                        Geen geplande scripts gevonden.
+                        <a href="~/DDFrAS/Newscript.cshtml">Nieuw script.</a>
+                    </p>
+                </div>
+            }
+        </div>
+        <div>
+            <br />
+        </div>
+        //Table for executed scripts if there are executed configs in the DB
+        <div class="bg-dark text-white">
+            <div class="container-lg col-10"><h4>Uitgevoerde scripts</h4></div>
+        </div>
+        <div class="container col">
+            @if (scripts.Count > 1 && executed>0)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Switch</th>
+                            <th>Status</th>
+                            <th>Uitvoer</th>
+                            <th>Output en direct-terminal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var script in scripts)
+                        {
+                            <tr>
+                                <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
+                                <td>@ASselect.Getstatus(script.Status)</td>
+                                <td>@script.ExDate</td>
+                                <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Zien</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="text-body">
+                    <p>
+                        Geen uitgevoerde scripts gevonden.
+                    </p>
+                </div>
+            }
+        </div>
     }
 }
