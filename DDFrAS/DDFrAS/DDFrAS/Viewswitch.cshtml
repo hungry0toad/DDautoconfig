@@ -6,39 +6,70 @@
 
     if (sw_id != 0)
     {
-        <form  method="post">
-            <div class="form-group">
-                <p>
-                    <label>Switch naam:</label>
-                    <input class="form-control" name="switchname" value="@ASselect.name(sw_id)" />
-                </p>
-                <p>
-                    <label>Management ip:</label>
-                    <input class="form-control" name="manip" value="@ASselect.manip(sw_id)" />
-                </p>
-                <p>
-                    <label>Ssh username:</label>
-                    <input class="form-control" name="sshuser" value="@ASselect.sshuser(sw_id)" />
-                </p>
-                <p>
-                    <label>Ssh wachtwoord:</label>
-                    <input class="form-control" name="sshpass" value="@ASselect.sshpass(sw_id)" />
-                </p>
-                <p>
-                    <label>Enable wachtwoord:</label>
-                    <input class="form-control" name="enpass" value="@ASselect.termpass(sw_id)" />
-                </p>
-                <button type="submit">Wijzig</button>
+        var selectedswitch = ASselect.Switch(sw_id);
+        <h4 class="h4 border-bottom bg-dark text-white">Switch <small>@selectedswitch.Switch_Name</small></h4>
+        <div class="container float-left">
+            <div class="form-control">
+                @Html.ValidationSummary(true)
+                <form method="post">
+                    <div class="form-group">
+                        <label>Switch naam:</label>
+                        <input class="form-control" name="switchname" value="@selectedswitch.Switch_Name" />
+                    </div>
+                    <div class="form-group">
+                        <label>Management ip:</label>
+                        <input class="form-control" name="manip" value="@selectedswitch.Man_IP" />
+                    </div>
+                    <div class="form-group">
+                        <label>Ssh username:</label>
+                        <input class="form-control" name="sshuser" value="@selectedswitch.SSH_Username" />
+                    </div>
+                    <div class="form-group">
+                        <label>Ssh wachtwoord:</label>
+                        <input class="form-control" name="sshpass" value="@selectedswitch.SSH_Password" />
+                    </div>
+                    <div class="form-group">
+                        <label>Enable wachtwoord:</label>
+                        <input class="form-control" name="enpass" value="@selectedswitch.Term_Password" />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Opslaan</button>
+                    </div>
+                </form>
             </div>
-        </form>
+            <br/>
+            <div class=" border-top border-danger">
+                <br />
+                <form method="post" class="form-control">
+                    <h6>Verwijder switch? <small>Dit verwijderd ook alle uitgevoerde scripts op deze switch.</small></h6>
+                    <div class="form-group">
+                        <input class="switch-1" type="checkbox" name="todelete" value=true />
+                        <label>Ja</label><br />
+                        <button type="submit" class="hidden-1 btn btn-danger">Verwijder</button>
+                        <style>
+                            .hidden-1{display: none;}
+                            .switch-1:checked ~ .hidden-1{display: inline;}
+                        </style>
+                    </div>
+                </form>
+            </div>
+        </div>
     }
     else
     {
-        Response.Redirect("~/DDFrAS/Switches.cshtml");
+        Response.Redirect("~/DDFrAS/Viewswitches.cshtml");
     }
 
     if (IsPost)
-    { ASInput.EditSwitch(sw_id, Request.Form["switchname"], Request.Form["manip"], Request.Form["sshuser"], Request.Form["sshpass"], Request.Form["enpass"]); 
-    Response.Redirect(Request.RawUrl);}
+    {
+        var todel = Request.Form["todelete"];
+        if(todel == "true")
+        {
+            ASInput.DeleteSwitch(sw_id);
+            Response.Redirect("~/DDFrAS/Viewswitches.cshtml");
+        }
+        ASInput.EditSwitch(sw_id, Request.Form["switchname"], Request.Form["manip"], Request.Form["sshuser"], Request.Form["sshpass"], Request.Form["enpass"]);
+        Response.Redirect(Request.RawUrl);
+    }
 
 }

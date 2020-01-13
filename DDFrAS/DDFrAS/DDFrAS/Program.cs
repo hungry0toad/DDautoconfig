@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Web;
-using System.Text;
 using Renci.SshNet;
 using Hangfire;
+using System.Diagnostics;
+using Z.EntityFramework.Plus;
+using System.Data.Entity;
 
 namespace DDFrAS
 {
@@ -27,8 +27,55 @@ namespace DDFrAS
                 };
                 context.CONFIGs.Add(configscript);
                 context.SaveChanges();
+            
+            double executewhen = (executedate - DateTime.Now).TotalMinutes;
+            if (executewhen < 1)
+            {
+                Debug.WriteLine("now");
             }
-            ASHangfire.AddTask(id);
+            else
+            {
+                Debug.WriteLine("later");
+            }
+            ASHangfire.AddTask(configscript.Config_ID);
+        }
+        }
+
+        //Edi Config
+        public static void EditConfig(int configid, string JobId, string script, DateTime executedate)
+        {
+
+            using (var context = new DDFrASEntities())
+            {
+                var editconfig = context.CONFIGs.SingleOrDefault(c => c.Config_ID == configid);
+                if (editconfig != null)
+                {
+                    if (script != null)
+                    {
+                        editconfig.Script = script;
+                    }
+                    if (executedate != null)
+                    {
+                        editconfig.ExDate = executedate;
+                    }
+                    editconfig.Hangfire_ID = JobId;
+                    context.SaveChanges();
+                }
+            }
+        }
+        public static void DeleteScript(int configid)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                var delconfig = context.CONFIGs.SingleOrDefault(c => c.Config_ID == configid);
+                if (delconfig != null)
+                {
+                    var jobid = context.CONFIGs.Where(c => c.Config_ID == configid).Select(j => j.Hangfire_ID).FirstOrDefault();
+                    context.CONFIGs.Where(c => c.Config_ID == configid).Delete(); //delete config
+                    context.SaveChanges();
+                    BackgroundJob.Delete(jobid);
+                }
+            }
         }
 
         //insert new switch into database
@@ -68,16 +115,30 @@ namespace DDFrAS
                 }
             }
         }
+        public static void DeleteSwitch(int sw_id)
+        {
+            using (var context = new DDFrASEntities())
+            {
+                context.CONFIGs.Where(c => c.Switch_ID == sw_id).Delete(); //delete configs connected to switch (neccecary because of the foreign keys in the config table)
+                context.SaveChanges(); //savechanges to db
+                context.SWITCHes.Where(s => s.Switch_ID == sw_id).Delete(); //delete switch
+                context.SaveChanges(); //savechanges to db
+            }
+        }
         public static void NewOutput(string output, int config_id, int status)
         {
             using (var context = new DDFrASEntities())
             {
                 if (output != null)
                 {
-                    var addoutput = context.CONFIGs.SingleOrDefault(c => c.Config_ID == config_id);
-                    addoutput.Switch_Output = output;
-                    addoutput.Status = status;
-                    context.SaveChanges();
+                    try
+                    {
+                        var addoutput = context.CONFIGs.SingleOrDefault(c => c.Config_ID == config_id);
+                        addoutput.Switch_Output = output;
+                        addoutput.Status = status;
+                        context.SaveChanges();
+                    }
+                    catch { throw new InvalidOperationException("Config not found, probably has just been deleted"); }
                 }
             }
         }
@@ -87,7 +148,13 @@ namespace DDFrAS
     {
         public static void AddTask(int Config_id)
         {
-            BackgroundJob.Enqueue(() => ASsshconnection.SetupConnection(Config_id));
+            using (var context = new DDFrASEntities())
+            {
+                var configg = context.CONFIGs.SingleOrDefault(c => c.Config_ID == Config_id);
+                var JobId = BackgroundJob.Enqueue(() => ASsshconnection.SetupConnection(Config_id));
+                ASInput.EditConfig(Config_id, JobId, configg.Script, configg.ExDate);
+            }
+
         }
     }
 
@@ -118,7 +185,7 @@ namespace DDFrAS
             {
                 return "Mislukt";
             }
-            if( status == 4)
+            if (status == 4)
             {
                 return "SSH timeout";
             }
@@ -131,7 +198,7 @@ namespace DDFrAS
         {
             using (var context = new DDFrASEntities())
             {
-                return context.CONFIGs.Where(s => s.Status == 3).ToList();
+                return context.CONFIGs.Where(c => c.Status == 3).ToList();
             }
         }
         public static List<SWITCH> AllSwitches()
@@ -141,39 +208,11 @@ namespace DDFrAS
                 return context.SWITCHes.ToList();
             }
         }
-        public static string Switchname(int sw_id)
+        public static SWITCH Switch(int sw_id)
         {
             using (var context = new DDFrASEntities())
             {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Switch_Name).SingleOrDefault();
-            }
-        }
-        public static string Switchsshuser(int sw_id)
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.SSH_Username).SingleOrDefault();
-            }
-        }
-        public static string Switchsshpass(int sw_id)
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.SSH_Password).SingleOrDefault();
-            }
-        }
-        public static string Switchmanip(int sw_id)
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Man_IP).SingleOrDefault();
-            }
-        }
-        public static string Switchtermpass(int sw_id)
-        {
-            using (var context = new DDFrASEntities())
-            {
-                return (from s in context.SWITCHes where s.Switch_ID.Equals(sw_id) select s.Term_Password).SingleOrDefault();
+                return context.SWITCHes.Where(s => s.Switch_ID == sw_id).FirstOrDefault();
             }
         }
         public static string Script(int config_id)
@@ -187,29 +226,28 @@ namespace DDFrAS
     }
     public static class ASsshconnection
     {
+        [AutomaticRetry(Attempts = 5)]
         public static void SetupConnection(int configid)
         {
             using (var context = new DDFrASEntities())
             {
-                int switch_id = (context.CONFIGs.Where(c => c.Config_ID.Equals(configid)).Select(c => c.Switch_ID).FirstOrDefault());
-                string ip = ASselect.Switchmanip(switch_id);
-                string username = ASselect.Switchsshuser(switch_id);
-                string password = ASselect.Switchsshpass(switch_id);
-                string enablepass = ASselect.Switchtermpass(switch_id);
+                int switch_id = (context.CONFIGs.Where(c => c.Config_ID.Equals(configid)).Select(s => s.Switch_ID).SingleOrDefault());
+                var selswtich = ASselect.Switch(switch_id);
                 string newline = System.Environment.NewLine;
 
-                ConnectionInfo Conninfo = new ConnectionInfo(ip, 22, username, new AuthenticationMethod[]
+                //setup connection info
+                ConnectionInfo Conninfo = new ConnectionInfo(selswtich.Man_IP, 22, selswtich.SSH_Username, new AuthenticationMethod[]
                 {
-
-                    new PasswordAuthenticationMethod(username, password)
+                    new PasswordAuthenticationMethod(selswtich.SSH_Username, selswtich.SSH_Password)
                 });
-
+                //create new sshclient with connectioninfo
                 using (var sshclient = new SshClient(Conninfo))
                 {
+                    //try to execute script on switch else catch and call it timeout
                     try
                     {
                         sshclient.Connect();
-                        string script = "enable" + newline + ASselect.Switchtermpass(switch_id) + newline + ASselect.Script(configid);
+                        string script = "enable" + newline + selswtich.Term_Password + newline + ASselect.Script(configid);
                         using (var cmd = sshclient.CreateCommand(script))
                         {
                             cmd.Execute();
@@ -217,9 +255,11 @@ namespace DDFrAS
                             ASInput.NewOutput(cmd.Result, configid, status);
                         }
                     }
+                    //ssh timeout
                     catch
                     {
                         ASInput.NewOutput("SSH timeout", configid, 4);
+                        throw new InvalidOperationException("SSH timeout, trying again later");
                     }
                 }
             }
@@ -228,10 +268,11 @@ namespace DDFrAS
         //scan output for undesirable output/words
         public static int Scanoutput(string output)
         {
-            if(output == null)
+            if (output == null)
             {
                 return 3;
-            }else if (output.Contains("Invalid"))
+            }
+            else if (output.Contains("Invalid"))
             {
                 return 2;
             }

@@ -3,58 +3,80 @@
     Page.Title = "Scripts";
     Layout = "_Layout.cshtml";
 
+    <script>
+        $(document).ready(function () {
+
+            var $submit = $("#submit_prog").hide(),
+                $cbs = $('input[name="prog"]').click(function () {
+                    $submit.toggle($cbs.is(":checked"));
+                });
+
+        });
+    </script>
+
     //Get all scripts
     var grid = new WebGrid();
     using (var context = new DDFrASEntities())
     {
-        int planned=0;
-        int executed=0;
+        int planned = 0;
+        int executed = 0;
         var scripts = context.CONFIGs.ToList(); //Fetch all config entities
-        foreach (var script in scripts){if(script.Status == 0) { planned++;}} //check if there are any planned scripts
-        foreach (var script in scripts){if(script.Status != 0) { executed++;}} //check if there are any executed scripts
+        foreach (var script in scripts) { if (script.Status == 0) { planned++; } } //check if there are any planned scripts
+        foreach (var script in scripts) { if (script.Status != 0) { executed++; } } //check if there are any executed scripts
         var switches = context.SWITCHes.ToList(); //Fetch all switch entities
+
+        //Delete script when button is pushed
+        if (IsPost)
+        {
+            var configid = Request.Form["configid"].AsInt();
+            ASInput.DeleteScript(configid);
+            Response.Redirect("~/DDFrAS/viewscripts.cshtml"); 
+        }
 
         //Table for planned scripts if there are configs in the DB
         <div class="bg-dark text-white">
             <div class="container-lg col-10"><h4>Geplande scripts</h4></div>
         </div>
         <div class="container col border-bottom">
-            @if (scripts.Count > 1 && planned>0)
+            @*create table when there are scheduled scripts AND if there is at least 1 scheduled script*@
+            @if (scripts.Count > 1 && planned > 0)
             {
-                <table class="table">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Switch</th>
                             <th>Status</th>
                             <th>Uitvoer</th>
                             <th>Output en direct-terminal</th>
+                            <th>Verwijder?</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @* fill table with scheduled scripts *@
                         @foreach (var script in scripts)
                         {
                             if (script.Status == 0)
                             {
-                                <tr>
-                                    <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
-                                    <td>@ASselect.Getstatus(script.Status)</td>
-                                    <td>@script.ExDate</td>
-                                    <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Zien</a></td>
-                                </tr>
+                        <tr>
+                            <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
+                            <td>@ASselect.Getstatus(script.Status)</td>
+                            <td>@script.ExDate</td>
+                            <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Zien</a></td>
+                            <td><form method="post"><input type="hidden" value="@script.Config_ID" name="configid" /><button type="submit" class="btn btn-danger" id="submit_prog">Verwijder</button></form></td>
+                        </tr>
                             }
                         }
                     </tbody>
                 </table>
             }
+            //without scheduled scripts, show link for a new script
             else
-            {
-                <div class="text-body">
-                    <p>
-                        Geen geplande scripts gevonden.
-                        <a href="~/DDFrAS/Newscript.cshtml">Nieuw script.</a>
-                    </p>
-                </div>
-            }
+            { <p class="text-danger">Geen geplande scripts gevonden.</p>}
+        </div>
+        <div class="text-body container col">
+            <p>
+                <a href="~/DDFrAS/Newscript.cshtml">Nieuw script.</a>
+            </p>
         </div>
         <div>
             <br />
@@ -64,26 +86,32 @@
             <div class="container-lg col-10"><h4>Uitgevoerde scripts</h4></div>
         </div>
         <div class="container col">
-            @if (scripts.Count > 1 && executed>0)
+            @if (scripts.Count > 1 && executed > 0)
             {
-                <table class="table">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Switch</th>
                             <th>Status</th>
                             <th>Uitvoer</th>
                             <th>Output en direct-terminal</th>
+                            <th>Verwijder? <input type="checkbox" name="prog" value="1" /></th>
+
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var script in scripts)
                         {
-                            <tr>
-                                <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
-                                <td>@ASselect.Getstatus(script.Status)</td>
-                                <td>@script.ExDate</td>
-                                <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Zien</a></td>
-                            </tr>
+                            if (script.Status != 0)
+                            {
+                                <tr>
+                                    <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
+                                    <td>@ASselect.Getstatus(script.Status)</td>
+                                    <td>@script.ExDate</td>
+                                    <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Zien</a></td>
+                                    <td><form method="post"><button type="submit" class="btn btn-danger" id="submit_prog">Verwijder</button></form></td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
@@ -98,4 +126,9 @@
             }
         </div>
     }
+
 }
+<input type="checkbox" name="prog" value="1">
+<input type="checkbox" name="prog" value="2">
+
+<input type="submit" id="submit_prog" value='Submit' />

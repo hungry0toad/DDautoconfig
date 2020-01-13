@@ -1,38 +1,72 @@
 ﻿@using DDFrAS;
 @using System.Linq;
 @{
+    Validation.Add("executedate", Validator.DateTime("Dit is geen valide datum en of tijd"));
     Page.Title = "Viewscript";
     Layout = "_Layout.cshtml";
     //request scriptid from url
     int configid = Request.QueryString["id"].AsInt();
 
-    //Run script on buttonpush
-    if (IsPost)
-    {
-        ASHangfire.AddTask(configid);
-        Response.Redirect(string.Format("~/DDFrAS/viewscript.cshtml?id={0}",configid));
-    }
     if (configid != 0)
     {
         //get config data from FE with id
         using (var context = new DDFrASEntities())
         {
             var config = context.CONFIGs.Find(configid);
-            <form method="post" class="container">
+
+            //Run script on buttonpush
+            if (IsPost)
+            {
+                var executedate = Request.Form["executedate"].AsDateTime();
+                var now = Request.Form["now"]; //check if checkbox is checked
+                //if the checkbox is checked set execute time to now (plus 10 seconds)
+                if (now == "true")
+                {
+                    executedate = DateTime.Now.AddSeconds(10);
+                }
+
+                @*if (executedate! > DateTime.Now)
+                    {
+                        <div class="container">
+                            <p class="text-danger">Voer een geldige datum en tijd in.</p>
+                        </div>
+                    }*@
+                if (executedate < DateTime.Now)
+                {
+                    <div class="container">
+                        <p class="text-danger">Taken kunnen niet in het verleden worden uitgevoerd.</p>
+                    </div>}
+                ASInput.EditConfig(configid, config.Hangfire_ID, Request.Form["script"], executedate);
+                ASHangfire.AddTask(configid);
+                Response.Redirect(string.Format("~/DDFrAS/viewscript.cshtml?id={0}", configid));
+            }
+            <form method="post" class="form-control container">
+                @Html.ValidationSummary(true)
                 <div class="form-group">
-                    <div>
+                    <div class="">
                         <h6>Uitgevoerde script:</h6>
                         <p></p>
                         <textarea name="script" rows="12" class="form-control">@config.Script</textarea>
                     </div>
+                    <div class="">
+                        <input class="switch-1 form-check-inline" type="checkbox" name="now" value=true />
+                        <label>Voer nu uit?</label><br class="hidden-1" />
+                        <input class="form-control hidden-1" type="datetime-local" name="executedate" />
+                    </div>
                     <button class="btn btn-danger">Voer uit</button>
                     <div class="border-bottom"></div>
+
                     <div>
                         <h7>Output:</h7>
                         <textarea name="script" rows="12" class="form-control">@config.Switch_Output</textarea>
                     </div>
                 </div>
             </form>
+            <style>
+                .switch-1:checked ~ .hidden-1 {
+                    display: none !important;
+                }
+            </style>
 
         }
     }

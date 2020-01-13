@@ -5,78 +5,109 @@
     Layout = "_Layout.cshtml";
     int varid = 5;
     int sw_id = 0;
+    //bool execute
 }
 @{
     using (var context = new DDFrASEntities())
     {
-        //Fetch script template
+        //Fetch script template not dynamic atm
         var ssh_template = context.SSH_COMMANDS.Find(varid).Command_Temp;
         if (IsPost && Validation.IsValid())
         {
-            //request form data
-            string script = Request.Form["script"];
-            sw_id = Request.Form["selectswitch"].AsInt();
-            DateTime executedate = Request.Form["executedate"].AsDateTime();
+            //request from data
+            string script = Request.Form["script"]; //request filled in script from form
+            sw_id = Request.Form["selectswitch"].AsInt(); //request the chosen switch from form
+            DateTime executedate = Request.Form["executedate"].AsDateTime(); //request the execute time/date
+            var now = Request.Form["now"]; //check if checkbox is checked
+
+            //if the checkbox is checked set execute time to now (plus 10 seconds)
+            if (now == "true")
+            {
+                executedate = DateTime.Now.AddSeconds(10);
+            }
+
+            //detect if script parts ( {} ) are not present anymore and if so, show warning text
             if (script.Contains('{') || script.Contains('}') || script == "")
-            {
-                <div class="container">
+            {<div class="container">
                     <p class="text-danger">Het script moet ingevult zijn en geen "{" of "}" tekens bevatten!</p>
-                </div>
-            }
+                </div>}
+
+            //check if a switch has been chosen
             if (sw_id == 0)
-            {
-                <div class="container">
+            {<div class="container">
                     <p class="text-danger">Kies een switch.</p>
-                </div>
-            }
+                </div>}
+
+            //check if chosen date is valid
+            @*if (executedate > DateTime.Now)
+                {
+                    <div class="container">
+                        <p class="text-danger">Voer een geldige datum en tijd in.</p>
+                    </div>
+                }*@
+
+            //check if the chosen date is not in the past
             if (executedate < DateTime.Now)
             {
                 <div class="container">
                     <p class="text-danger">Taken kunnen niet in het verleden worden uitgevoerd.</p>
-                </div>
-            }
+                </div>}
+            //if none of the above push the form
             else
             {
-                var now = Request.Form["now"];
 
-                if (executedate == DateTime.MinValue || now == "true")
+                //if the script needs to be executed now, do it
+                if (now == "true")
                 {
-                    executedate = DateTime.Now;
-                    ASInput.NewScript(script, executedate, varid, sw_id);
-                    //ASsshconnection.SetupConnection(context.CONFIGs.Where(s => s.Switch_ID == sw_id).Select(c => c.Config_ID).FirstOrDefault());
+                    ASInput.NewScript(script, executedate, varid, sw_id); //push new script to FE, db and hangfire for execution
+                    Response.Redirect("~/DDFrAS/viewscripts.cshtml");
                 }
-                else
+                //if not to be executed now
+                else if (now != "true")
                 {
                     //push form data to database
-                    ASInput.NewScript(script, executedate, varid, sw_id);
+                    ASInput.NewScript(script, executedate, varid, sw_id); //push new script to FE, db and hangfire for schduling
+                    Response.Redirect("~/DDFrAS/viewscripts.cshtml");
                 }
 
-                Response.Redirect("~/DDFrAS/viewscripts.cshtml");
+
             }
         }
-
-        <div class="container text-left">
-            @Html.ValidationSummary(true)
-            <h2>Nieuw Script Maken</h2><br />
-            <form method="post" class="form-group">
-                <div>
-                    <textarea name="script" style="width: 100%;height:100%" class="form-control">@ssh_template</textarea>
-                    @Html.ValidationMessage("script")
-                </div>
-                <div>
-                    <input type="datetime-local" name="executedate" value="@DateTime.Now.ToString();" min="@DateTime.Now.ToString();">
-                </div>
-                <div>
-                    <p>Uitvoeren op switch:</p>
-                    @foreach (var sw in ASselect.AllSwitches())
-                    {
-                        <input type="radio" name="selectswitch" value="@sw.Switch_ID" /> @sw.Switch_Name<br />
-                    }
-                    @Html.ValidationMessage("switch")
-                </div>
-                Voer direct uit? <input type="checkbox" name="now" value="true" /><br />
-                <button type="submit" class="btn-outline-primary">Plan nieuw script</button>
-            </form>
+        <h4 class="h4 border-bottom bg-dark text-white">Nieuw script</h4>
+        <div class="container float-left">
+            <div class="form-control">
+                @Html.ValidationSummary(true)
+                <form method="post">
+                    <div class="form-group">
+                        <label>Script: <br /><small>Vul script in en vervang gedeeltes met '{' en '}'</small></label>
+                        <textarea name="script" rows="15" class="form-control">@ssh_template</textarea>
+                    </div>
+                    <div class="form-group">
+                        <input class="switch-1 form-check-inline" type="checkbox" name="now" value=true />
+                        <label>Voer nu uit?</label><br class="hidden-1" />
+                        <label class="hidden-1">Uitvoer datum en tijd:</label><br class="hidden-1" />
+                        <input class="hidden-1 form-control" type="datetime-local" name="executedate" />
+                        @Html.ValidationMessage("executedate")
+                    </div>
+                    <div class="form-group">
+                        <label>Op switch: <br /><small>Vergeet niet de switch eerst toe te voegen.</small></label><br />
+                        <select class="form-control" name="selectswitch">
+                            @foreach (var sw in ASselect.AllSwitches())
+                            {
+                                <option value="@sw.Switch_ID">@sw.Switch_Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Opslaan</button>
+                    </div>
+                </form>
+            </div>
         </div>
+        <style>
+            .switch-1:checked ~ .hidden-1 {
+                display: none !important;
+            }
+        </style>
     }
 }
