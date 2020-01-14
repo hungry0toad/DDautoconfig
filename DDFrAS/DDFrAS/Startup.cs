@@ -28,7 +28,14 @@ namespace DDFrAS
             {
                 Authorization = new[] { new MyAuthorizationFilter() }
             });
-
+            foreach (var config in ASselect.Getconfignotexecuted())
+            {
+                double executetime = (config.ExDate - DateTime.Now).TotalSeconds;
+                if (executetime > 0)
+                {
+                    BackgroundJob.Schedule(() => ASsshconnection.SetupConnection(config.Config_ID), TimeSpan.FromSeconds(executetime));
+                }
+            }
             BackgroundJob.Enqueue(() => Debug.WriteLine("sup"));
         }
 
