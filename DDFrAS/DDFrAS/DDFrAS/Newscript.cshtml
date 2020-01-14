@@ -5,7 +5,6 @@
     Layout = "_Layout.cshtml";
     int varid = 5;
     int sw_id = 0;
-    //bool execute
 }
 @{
     using (var context = new DDFrASEntities())
@@ -15,10 +14,10 @@
         if (IsPost && Validation.IsValid())
         {
             //request from data
-            string script = Request.Form["script"]; //request filled in script from form
-            sw_id = Request.Form["selectswitch"].AsInt(); //request the chosen switch from form
-            DateTime executedate = Request.Form["executedate"].AsDateTime(); //request the execute time/date
-            var now = Request.Form["now"]; //check if checkbox is checked
+            string script = Request.Form["script"];                             //request filled in script from form
+            sw_id = Request.Form["selectswitch"].AsInt();                       //request the chosen switch from form
+            DateTime executedate = Request.Form["executedate"].AsDateTime();    //request the execute time/date
+            var now = Request.Form["now"];                                      //check if checkbox is checked
 
             //if the checkbox is checked set execute time to now (plus 10 seconds)
             if (now == "true")
@@ -55,7 +54,6 @@
             //if none of the above push the form
             else
             {
-
                 //if the script needs to be executed now, do it
                 if (now == "true")
                 {
@@ -69,8 +67,6 @@
                     ASInput.NewScript(script, executedate, varid, sw_id); //push new script to FE, db and hangfire for schduling
                     Response.Redirect("~/DDFrAS/viewscripts.cshtml");
                 }
-
-
             }
         }
         <h4 class="h4 border-bottom bg-dark text-white">Nieuw script</h4>

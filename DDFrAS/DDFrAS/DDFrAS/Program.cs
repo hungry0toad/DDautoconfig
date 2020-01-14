@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Hangfire;
 using Renci.SshNet;
-using Hangfire;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Z.EntityFramework.Plus;
-using System.Data.Entity;
 
 namespace DDFrAS
 {
@@ -27,22 +26,28 @@ namespace DDFrAS
                 };
                 context.CONFIGs.Add(configscript);
                 context.SaveChanges();
-            
-            double executewhen = (executedate - DateTime.Now).TotalMinutes;
-            if (executewhen < 1)
-            {
-                Debug.WriteLine("now");
+
+                //double executewhen = (executedate - DateTime.Now).TotalSeconds;
+                //if (executewhen < 60)
+                //{
+                //    if (executewhen < 0)
+                //    {
+                //        executewhen = 1;
+                //    }
+                //    var jobid = BackgroundJob.Schedule(() => ASsshconnection.SetupConnection(configscript.Config_ID), TimeSpan.FromSeconds(executewhen));
+                //    ASInput.EditConfig(configscript.Config_ID, jobid);
+                //    Debug.WriteLine("now");
+                //}
+                //else
+                //{
+                //    Debug.WriteLine("later");
+                //}
+                //ASHangfire.AddTask(configscript.Config_ID);
             }
-            else
-            {
-                Debug.WriteLine("later");
-            }
-            ASHangfire.AddTask(configscript.Config_ID);
-        }
         }
 
-        //Edi Config
-        public static void EditConfig(int configid, string JobId, string script, DateTime executedate)
+        //Edit Config with new script and executedate
+        public static void EditConfig(int configid, string script, DateTime executedate)
         {
 
             using (var context = new DDFrASEntities())
@@ -50,20 +55,34 @@ namespace DDFrAS
                 var editconfig = context.CONFIGs.SingleOrDefault(c => c.Config_ID == configid);
                 if (editconfig != null)
                 {
-                    if (script != null)
+                    editconfig.Script = script;
+                    editconfig.ExDate = executedate;
+                    context.SaveChanges();
+                    if (executedate > DateTime.Now)
                     {
-                        editconfig.Script = script;
+                        ASHangfire.AddTask(configid);
                     }
-                    if (executedate != null)
-                    {
-                        editconfig.ExDate = executedate;
-                    }
+                }
+
+            }
+        }
+
+        //Edit config - add hangfire id
+        public static void EditConfig(int configid, string JobId)
+        {
+
+            using (var context = new DDFrASEntities())
+            {
+                var editconfig = context.CONFIGs.SingleOrDefault(c => c.Config_ID == configid);
+                if (editconfig != null)
+                {
                     editconfig.Hangfire_ID = JobId;
+                    editconfig.Status = 5;
                     context.SaveChanges();
                 }
             }
         }
-        public static void DeleteScript(int configid)
+        public static void DeleteConfig(int configid)
         {
             using (var context = new DDFrASEntities())
             {
@@ -73,7 +92,11 @@ namespace DDFrAS
                     var jobid = context.CONFIGs.Where(c => c.Config_ID == configid).Select(j => j.Hangfire_ID).FirstOrDefault();
                     context.CONFIGs.Where(c => c.Config_ID == configid).Delete(); //delete config
                     context.SaveChanges();
-                    BackgroundJob.Delete(jobid);
+                    try
+                    {
+                        BackgroundJob.Delete(jobid);
+                    }
+                    catch { Debug.WriteLine("Job not found (should not matter)"); }
                 }
             }
         }
@@ -119,10 +142,10 @@ namespace DDFrAS
         {
             using (var context = new DDFrASEntities())
             {
-                context.CONFIGs.Where(c => c.Switch_ID == sw_id).Delete(); //delete configs connected to switch (neccecary because of the foreign keys in the config table)
-                context.SaveChanges(); //savechanges to db
+                context.CONFIGs.Where(c => c.Switch_ID == sw_id).Delete();  //delete configs connected to switch (neccecary because of the foreign keys in the config table)
+                context.SaveChanges();                                      //savechanges to db
                 context.SWITCHes.Where(s => s.Switch_ID == sw_id).Delete(); //delete switch
-                context.SaveChanges(); //savechanges to db
+                context.SaveChanges();                                      //savechanges to db
             }
         }
         public static void NewOutput(string output, int config_id, int status)
@@ -152,9 +175,8 @@ namespace DDFrAS
             {
                 var configg = context.CONFIGs.SingleOrDefault(c => c.Config_ID == Config_id);
                 var JobId = BackgroundJob.Enqueue(() => ASsshconnection.SetupConnection(Config_id));
-                ASInput.EditConfig(Config_id, JobId, configg.Script, configg.ExDate);
+                ASInput.EditConfig(Config_id, JobId);
             }
-
         }
     }
 
@@ -167,15 +189,17 @@ namespace DDFrAS
                 return context.CONFIGs.Where(c => c.Status == 0).ToList();
             }
         }
+
+        //Translate status to human
         public static string Getstatus(int status)
         {
             if (status == 0)
             {
-                return "Nog niet uitgevoerd";
+                return "Nog niet uitgevoerd of gepland";
             }
             if (status == 1)
             {
-                return "succesvol uitgevoerd";
+                return "Succesvol uitgevoerd";
             }
             if (status == 2)
             {
@@ -188,6 +212,10 @@ namespace DDFrAS
             if (status == 4)
             {
                 return "SSH timeout";
+            }
+            if (status == 5)
+            {
+                return "Gepland";
             }
             else
             {
@@ -221,7 +249,14 @@ namespace DDFrAS
             {
                 return (from c in context.CONFIGs where c.Config_ID.Equals(config_id) select c.Script).SingleOrDefault();
             }
+        }
 
+        public static List<CONFIG> AllConfigs()
+        {
+            using (var context = new DDFrASEntities())
+            {
+                return context.CONFIGs.ToList();
+            }
         }
     }
     public static class ASsshconnection
@@ -263,7 +298,6 @@ namespace DDFrAS
                     }
                 }
             }
-
         }
         //scan output for undesirable output/words
         public static int Scanoutput(string output)

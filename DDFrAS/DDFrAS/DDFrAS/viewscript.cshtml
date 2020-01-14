@@ -19,10 +19,11 @@
             {
                 var executedate = Request.Form["executedate"].AsDateTime();
                 var now = Request.Form["now"]; //check if checkbox is checked
-                //if the checkbox is checked set execute time to now (plus 10 seconds)
+                                               //if the checkbox is checked set execute time to now (plus 10 seconds)
                 if (now == "true")
                 {
                     executedate = DateTime.Now.AddSeconds(10);
+                    ASHangfire.AddTask(configid);
                 }
 
                 @*if (executedate! > DateTime.Now)
@@ -36,8 +37,7 @@
                     <div class="container">
                         <p class="text-danger">Taken kunnen niet in het verleden worden uitgevoerd.</p>
                     </div>}
-                ASInput.EditConfig(configid, config.Hangfire_ID, Request.Form["script"], executedate);
-                ASHangfire.AddTask(configid);
+                ASInput.EditConfig(configid, Request.Form["script"], executedate);
                 Response.Redirect(string.Format("~/DDFrAS/viewscript.cshtml?id={0}", configid));
             }
             <form method="post" class="form-control container">

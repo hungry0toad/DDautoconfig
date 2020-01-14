@@ -37,7 +37,7 @@
                     </div>
                 </form>
             </div>
-            <br/>
+            <br />
             <div class=" border-top border-danger">
                 <br />
                 <form method="post" class="form-control">
@@ -46,10 +46,7 @@
                         <input class="switch-1" type="checkbox" name="todelete" value=true />
                         <label>Ja</label><br />
                         <button type="submit" class="hidden-1 btn btn-danger">Verwijder</button>
-                        <style>
-                            .hidden-1{display: none;}
-                            .switch-1:checked ~ .hidden-1{display: inline;}
-                        </style>
+
                     </div>
                 </form>
             </div>
@@ -63,7 +60,7 @@
     if (IsPost)
     {
         var todel = Request.Form["todelete"];
-        if(todel == "true")
+        if (todel == "true")
         {
             ASInput.DeleteSwitch(sw_id);
             Response.Redirect("~/DDFrAS/Viewswitches.cshtml");
@@ -71,5 +68,13 @@
         ASInput.EditSwitch(sw_id, Request.Form["switchname"], Request.Form["manip"], Request.Form["sshuser"], Request.Form["sshpass"], Request.Form["enpass"]);
         Response.Redirect(Request.RawUrl);
     }
+    <style>
+        .hidden-1 {
+            display: none;
+        }
 
+        .switch-1:checked ~ .hidden-1 {
+            display: inline;
+        }
+    </style>
 }
