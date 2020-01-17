@@ -27,30 +27,25 @@
 
             //detect if script parts ( {} ) are not present anymore and if so, show warning text
             if (script.Contains('{') || script.Contains('}') || script == "")
-            {<div class="container">
+            {
+                <div class="container">
                     <p class="text-danger">Het script moet ingevult zijn en geen "{" of "}" tekens bevatten!</p>
-                </div>}
-
+                </div>
+            }
             //check if a switch has been chosen
-            if (sw_id == 0)
-            {<div class="container">
+            else if (sw_id == 0)
+            {
+                <div class="container">
                     <p class="text-danger">Kies een switch.</p>
-                </div>}
-
-            //check if chosen date is valid
-            @*if (executedate > DateTime.Now)
-                {
-                    <div class="container">
-                        <p class="text-danger">Voer een geldige datum en tijd in.</p>
-                    </div>
-                }*@
-
+                </div>
+            }
             //check if the chosen date is not in the past
-            if (executedate < DateTime.Now)
+            else if (executedate < DateTime.Now)
             {
                 <div class="container">
                     <p class="text-danger">Taken kunnen niet in het verleden worden uitgevoerd.</p>
-                </div>}
+                </div>
+            }
             //if none of the above push the form
             else
             {

@@ -10,8 +10,8 @@
         int planned = 0;
         int executed = 0;
         var scripts = ASselect.AllConfigs(); //Fetch all config entities
-        foreach (var script in scripts) { if (script.Status == 0) { planned++; } } //check if there are any planned scripts
-        foreach (var script in scripts) { if (script.Status != 0) { executed++; } } //check if there are any executed scripts
+        foreach (var script in scripts) { if (script.Status == 0 || script.Status == 5) { planned++; } } //check if there are any planned scripts
+        foreach (var script in scripts) { if (script.Status != 0 || script.Status != 5) { executed++; } } //check if there are any executed scripts
         var switches = ASselect.AllSwitches(); //Fetch all switch entities
 
         //Delete script when button is pushed
@@ -28,12 +28,13 @@
         </div>
         <div class="container col border-bottom">
             @*create table when there are scheduled scripts AND if there is at least 1 scheduled script*@
-            @if (scripts.Count > 1 && planned > 0)
+            @if (scripts.Count > 0 && planned > 0)
             {
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Switch</th>
+                            <th>ID</th>
                             <th>Status</th>
                             <th>Uitvoer</th>
                             <th>Output en direct-terminal</th>
@@ -48,6 +49,7 @@
                             {
                                 <tr>
                                     <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
+                                    <td><a href="~/Hangfire/">@script.Config_ID</a></td>
                                     <td>@ASselect.Getstatus(script.Status)</td>
                                     <td>@script.ExDate</td>
                                     <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Bekijk</a></td>
@@ -75,16 +77,17 @@
             <div class="container-lg col-10"><h4>Uitgevoerde scripts</h4></div>
         </div>
         <div class="container col">
-            @if (scripts.Count > 1 && executed > 0)
+            @if (scripts.Count > 0 && executed > 0)
             {
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Switch</th>
+                            <th>ID</th>
                             <th>Status</th>
                             <th>Uitvoer</th>
                             <th>Output en direct-terminal</th>
-                            <th>Verwijder? <input type="checkbox" name="prog" value="1" /></th>
+                            <th>Verwijder? @*<input type="checkbox" name="prog" value="1" />*@</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,6 +97,7 @@
                             {
                                 <tr>
                                     <td>@switches.Where(s => s.Switch_ID == script.Switch_ID).Select(s => s.Switch_Name).FirstOrDefault()</td>
+                                    <td>@script.Config_ID</td>
                                     <td>@ASselect.Getstatus(script.Status)</td>
                                     <td>@script.ExDate</td>
                                     <td><a href="~/DDFrAS/viewscript.cshtml?id=@script.Config_ID">Bekijk</a></td>

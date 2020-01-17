@@ -13,16 +13,28 @@
         using (var context = new DDFrASEntities())
         {
             var config = context.CONFIGs.Find(configid);
+            if(config == null)
+            {
+                Response.Redirect("~/DDFrAS/viewscripts.cshtml");
+            }
 
             //Run script on buttonpush
             if (IsPost)
             {
                 var executedate = Request.Form["executedate"].AsDateTime();
                 var now = Request.Form["now"]; //check if checkbox is checked
-                                               //if the checkbox is checked set execute time to now (plus 10 seconds)
+                var scriptnew = Request.Form["script"];
+
+                //if the checkbox is checked set execute time to now (plus 10 seconds)
                 if (now == "true")
                 {
                     executedate = DateTime.Now.AddSeconds(10);
+                    ASInput.EditConfig(configid, scriptnew, executedate);
+                    ASHangfire.AddTask(configid);
+                }
+                else
+                {
+                    ASInput.EditConfig(configid, Request.Form["script"], executedate);
                     ASHangfire.AddTask(configid);
                 }
 
@@ -32,12 +44,11 @@
                             <p class="text-danger">Voer een geldige datum en tijd in.</p>
                         </div>
                     }*@
-                if (executedate < DateTime.Now)
+                if (executedate > DateTime.Now)
                 {
                     <div class="container">
                         <p class="text-danger">Taken kunnen niet in het verleden worden uitgevoerd.</p>
                     </div>}
-                ASInput.EditConfig(configid, Request.Form["script"], executedate);
                 Response.Redirect(string.Format("~/DDFrAS/viewscript.cshtml?id={0}", configid));
             }
             <form method="post" class="form-control container">
